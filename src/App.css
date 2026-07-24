@@ -1,0 +1,105 @@
+.app-shell {
+  min-height: 100vh;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.hello-screen {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.hello-logo {
+  width: min(88vw, 1040px);
+  overflow: visible;
+}
+
+.hello-logo text {
+  font-family: "Brush Script MT", "Segoe Script", "Apple Chancery", cursive;
+  font-size: 252px;
+  font-weight: 400;
+  letter-spacing: 0;
+  dominant-baseline: middle;
+}
+
+.hello-haze,
+.hello-shadow,
+.hello-glow,
+.hello-stroke,
+.hello-fill {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hello-haze {
+  stroke: rgba(126, 198, 242, 0.2);
+  stroke-width: 42;
+  filter: blur(24px);
+}
+
+.hello-shadow {
+  stroke: rgba(126, 198, 242, 0.38);
+  stroke-width: 30;
+  filter: blur(15px);
+}
+
+.hello-glow {
+  stroke: rgba(203, 228, 243, 0.82);
+  stroke-width: 18;
+  filter: blur(5px);
+}
+
+.hello-stroke {
+  stroke: url("#helloGradient");
+  stroke-width: 10;
+  stroke-dasharray: 1320;
+  stroke-dashoffset: 1320;
+  filter: url("#softBlueGlow");
+  animation: hello-flow 5.4s cubic-bezier(0.72, 0, 0.22, 1) infinite;
+}
+
+.hello-fill {
+  stroke: #CBE4F3;
+  stroke-width: 3.5;
+  opacity: 0.72;
+}
+
+@keyframes hello-flow {
+  0% {
+    stroke-dashoffset: 1320;
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  48% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  72% {
+    stroke-dashoffset: -1320;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: -1320;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .hello-logo {
+    width: 112vw;
+  }
+
+  .hello-logo text {
+    font-size: 188px;
+  }
+}
