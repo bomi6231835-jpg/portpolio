@@ -1,8 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import LearningCardSection from './LearningCardSection'
 
 const learningCards = [
   {
@@ -61,156 +57,20 @@ const learningCards = [
   },
 ]
 
-const Learn = () => {
-  const sectionRef = useRef(null)
-  const viewportRef = useRef(null)
-  const trackRef = useRef(null)
-  const progressRef = useRef(null)
-
-  useLayoutEffect(() => {
-    const section = sectionRef.current
-    const viewport = viewportRef.current
-    const track = trackRef.current
-    const progress = progressRef.current
-
-    if (!section || !viewport || !track || !progress) return undefined
-
-    const getScrollDistance = () =>
-      Math.max(0, track.scrollWidth - viewport.clientWidth)
-
-    const context = gsap.context(() => {
-      gsap.set(track, { x: 0 })
-      gsap.set(progress, {
-        scaleX: 0,
-        transformOrigin: 'left center',
-      })
-
-      const timeline = gsap.timeline({
-        defaults: { ease: 'none' },
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: () =>
-            `+=${Math.max(
-              getScrollDistance() * 1.25,
-              window.innerHeight * 1.5,
-            )}`,
-          pin: true,
-          pinSpacing: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-        },
-      })
-
-      timeline
-        .to(track, { x: () => -getScrollDistance() }, 0)
-        .to(progress, { scaleX: 1 }, 0)
-    }, section)
-
-    const refreshFrame = window.requestAnimationFrame(() => {
-      ScrollTrigger.refresh()
-    })
-
-    return () => {
-      window.cancelAnimationFrame(refreshFrame)
-      context.revert()
+const Learn = () => (
+  <LearningCardSection
+    id="learning"
+    title="학습과 경험"
+    eyebrow="Learning Journey"
+    description={
+      <>
+        배운 것을 직접 만들며 확인하고,
+        <br className="hidden sm:block" /> 경험을 다음 도전으로 연결합니다.
+      </>
     }
-  }, [])
-
-  return (
-    <section
-      ref={sectionRef}
-      aria-labelledby="learn-heading"
-      className="relative flex min-h-screen w-full items-center overflow-hidden bg-white"
-    >
-      <div className="w-full py-12 sm:py-16 lg:py-20">
-        <header className="px-6 sm:px-10 lg:px-14">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em] text-[var(--color-primary)] sm:text-sm">
-            Learning Journey
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            {/* <h2
-              id="learn-heading"
-              className="text-6xl text-[clamp(2.5rem,7vw,5.5rem)] font-black leading-none tracking-[-0.06em] text-[var(--color-text)]"
-            >
-              학습과 경험
-            </h2> */}
-            <p className="max-w-md text-sm leading-6 text-neutral-500 sm:text-right sm:text-base">
-              배운 것을 직접 만들며 확인하고,
-              <br className="hidden sm:block" /> 경험을 다음 도전으로 연결합니다.
-            </p>
-          </div>
-        </header>
-
-        <div
-          ref={viewportRef}
-          className="mt-10 w-full overflow-hidden sm:mt-12 lg:mt-14"
-        >
-          <div
-            ref={trackRef}
-            className="flex w-max flex-nowrap gap-5 px-6 will-change-transform sm:gap-6 sm:px-10 lg:gap-8 lg:px-14"
-          >
-            {learningCards.map((card) => (
-              <article
-                key={card.number}
-                className={`relative flex h-[22rem] w-[min(82vw,22rem)] shrink-0 flex-col overflow-hidden rounded-[2rem] border border-[#DDE1FF] bg-gradient-to-br ${card.accent} p-6 shadow-[0_20px_60px_rgba(69,62,71,0.09)] sm:h-[24rem] sm:w-[24rem] sm:p-8 lg:h-[26rem] lg:w-[28rem] lg:p-10`}
-              >
-                <div
-                  aria-hidden="true"
-                  className="absolute -right-14 -top-14 h-44 w-44 rounded-full bg-[var(--color-primary)] opacity-10 blur-2xl"
-                />
-
-                <div className="relative flex items-start justify-between">
-                  <span className="text-xs font-bold tracking-[0.2em] text-[var(--color-primary-strong)]">
-                    {card.eyebrow}
-                  </span>
-                  <span className="text-3xl font-black tracking-[-0.06em] text-[var(--color-primary)]/35 sm:text-4xl">
-                    {card.number}
-                  </span>
-                </div>
-
-                <div className="relative mt-auto">
-                  <h3 className="text-2xl font-extrabold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl">
-                    {card.title}
-                  </h3>
-                  <p className="mt-4 text-sm leading-6 text-neutral-600 sm:text-base sm:leading-7">
-                    {card.description}
-                  </p>
-                  <ul
-                    aria-label={`${card.title} 학습 키워드`}
-                    className="mt-6 flex flex-wrap gap-2"
-                  >
-                    {card.tags.map((tag) => (
-                      <li
-                        key={tag}
-                        className="rounded-full border border-[#C9CEFF] bg-white/70 px-3 py-1.5 text-xs font-semibold text-[#453E67] backdrop-blur-sm"
-                      >
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8 px-6 sm:px-10 lg:px-14">
-          <div className="h-1 w-full overflow-hidden rounded-full bg-[#E9ECFF]">
-            <div
-              ref={progressRef}
-              className="h-full w-full rounded-full bg-[var(--color-primary)] will-change-transform"
-            />
-          </div>
-          <div className="mt-3 flex items-center justify-between text-[0.65rem] font-bold tracking-[0.18em] text-neutral-400">
-            <span>SCROLL TO EXPLORE</span>
-            <span>01 — 06</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
+    cards={learningCards}
+    nextSectionId="learning-2"
+  />
+)
 
 export default Learn

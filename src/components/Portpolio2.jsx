@@ -154,14 +154,6 @@ function Portpolio2() {
     }, 1900)
   }
 
-  const handlePortfolioScroll = (event) => {
-    const scrollArea = event.currentTarget
-    const isAtBottom =
-      scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 2
-
-    if (isAtBottom) exitPortfolio()
-  }
-
   const handlePortfolioWheel = (event) => {
     if (event.deltaY <= 0) return
 
@@ -174,9 +166,8 @@ function Portpolio2() {
 
   return (
     <div
-      className="h-full min-h-0 w-full overflow-y-auto bg-[var(--watch-bg)] font-['Nanum_Gothic','Noto_Sans_KR',system-ui,sans-serif] text-[var(--watch-text)] antialiased transition-colors duration-300"
+      className="h-full min-h-0 w-full overflow-y-scroll overscroll-contain bg-[var(--watch-bg)] font-['Nanum_Gothic','Noto_Sans_KR',system-ui,sans-serif] text-[var(--watch-text)] antialiased [scrollbar-gutter:stable] transition-colors duration-300"
       style={themeStyles[themeMode]}
-      onScroll={handlePortfolioScroll}
       onWheel={handlePortfolioWheel}
     >
       <WatchHeader themeMode={themeMode} onThemeToggle={handleThemeToggle} />
