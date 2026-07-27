@@ -131,7 +131,7 @@
   }
 
   32%,
-  50% {
+  60% {
     opacity: 1;
     transform: translateX(0);
   }
@@ -154,7 +154,7 @@
   }
 
   32%,
-  50% {
+  60% {
     opacity: 1;
     transform: translateX(0);
   }

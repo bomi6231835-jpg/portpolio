@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Footer from './Footer'
+
 
 const projects = [
   {
@@ -20,8 +22,8 @@ const projects = [
     thumbClass: 'bg-[linear-gradient(135deg,#808DFD,#C6CBFF)]',
     img: '/img/portpolio2/today-menu.png',
     progress: 38,
-    githubUrl:'https://github.com/bomi6231835-jpg/today-menu.git',
-    deployUrl:'https://today-menu-git-main-sdhuen01-3018s-projects.vercel.app',
+    githubUrl: 'https://github.com/bomi6231835-jpg/today-menu.git',
+    deployUrl: 'https://today-menu-git-main-sdhuen01-3018s-projects.vercel.app',
     pdfUrl: '/pdfs/today-menu.pdf',
 
   },
@@ -33,7 +35,7 @@ const projects = [
     duration: '02:15',
     type: '도라에몽의약주머니',
     roleTitle: '머신러닝, 스트림릿, 허깅페이스',
-    stack: ['Machine Learning', 'Colab', 'LLM', 'Huggingface', 'Streamlit','Figma'],
+    stack: ['Machine Learning', 'Colab', 'LLM', 'Huggingface', 'Streamlit', 'Figma'],
     summary:
       '사용자의 이력서 문장을 분석하고 직무에 맞는 개선 방향을 제안하는 AI 기반 첨삭 서비스입니다.',
     timeline: '00:00 문제 정의 · 00:35 문장 분석 · 01:20 첨삭 결과 · 02:00 개선 요약',
@@ -42,8 +44,8 @@ const projects = [
     thumbClass: 'bg-[linear-gradient(135deg,#6771E0,#9FA8FF)]',
     img: '/img/portpolio2/drug_main.png',
     progress: 44,
-    githubUrl:'https://github.com/bomi6231835-jpg/Drug_main.git',
-    deployUrl:'https://huggingface.co/spaces/yeyeon/Drug_main',
+    githubUrl: 'https://github.com/bomi6231835-jpg/Drug_main.git',
+    deployUrl: 'https://huggingface.co/spaces/yeyeon/Drug_main',
     pdfUrl: '/pdfs/drug-main.pdf',
   },
   {
@@ -63,8 +65,8 @@ const projects = [
     thumbClass: 'bg-[linear-gradient(135deg,#565FC7,#808DFD)]',
     img: '/img/portpolio2/film.png',
     progress: 52,
-    githubUrl:'https://github.com/bomi6231835-jpg/movie_260407.git',
-    deployUrl:'http://127.0.0.1:5000',
+    githubUrl: 'https://github.com/bomi6231835-jpg/movie_260407.git',
+    deployUrl: 'http://127.0.0.1:5000',
     pdfUrl: '/pdfs/filmatique.pdf',
   },
   {
@@ -75,7 +77,7 @@ const projects = [
     duration: '01:52',
     type: '조예연',
     roleTitle: '카카오 API 활용하기',
-    stack: ['HTML', 'RestAPI', 'index.css', 'Javascript','Figma'],
+    stack: ['HTML', 'RestAPI', 'index.css', 'Javascript', 'Figma'],
     summary:
       '반복되는 UI 패턴을 컴포넌트 단위로 정리하고, 화면 제작 속도를 높이기 위한 디자인 시스템 작업입니다.',
     timeline: '00:00 토큰 정의 · 00:30 컴포넌트 설계 · 01:05 문서화 · 01:35 적용 사례',
@@ -84,8 +86,8 @@ const projects = [
     thumbClass: 'bg-[linear-gradient(135deg,#A6AEFF,#E9ECFF)]',
     img: '/img/portpolio2/bookstore.png',
     progress: 61,
-    githubUrl:'https://github.com/bomi6231835-jpg/bookstore_260319.git',
-    deployUrl:'https://bomi6231835-jpg.github.io/bookstore_260319/',
+    githubUrl: 'https://github.com/bomi6231835-jpg/bookstore_260319.git',
+    deployUrl: 'https://bomi6231835-jpg.github.io/bookstore_260319/',
     pdfUrl: '/pdfs/bookstore.pdf',
   },
 ]
@@ -122,7 +124,7 @@ const themeStyles = {
     '--watch-text': '#F6F7FF',
     '--watch-muted': '#B7BEDC',
     '--watch-faint': '#8F96BC',
-    '--watch-header': 'rgba(29,30,58,0.9)',
+    '--watch-header': '#25213D',
     '--watch-shadow': '0 24px 70px rgba(0,0,0,0.32)',
     '--watch-desc': 'rgba(38,40,70,0.94)',
     '--watch-desc-border': 'rgba(211,216,255,0.2)',
@@ -133,9 +135,19 @@ const themeStyles = {
   },
 }
 
-function Portpolio2() {
+function Portpolio2({ onNavigateHome }) {
   const [activeProject, setActiveProject] = useState(0)
+  const [likeCounts, setLikeCounts] = useState(() =>
+    projects.map(() => 0),
+  )
   const homeScrollLockRef = useRef(false)
+  const scrollAreaRef = useRef(null)
+  const topGestureCountRef = useRef(0)
+  const isTopGestureActiveRef = useRef(false)
+  const topGestureIdleTimerRef = useRef(null)
+  const topGestureResetTimerRef = useRef(null)
+  const homeNavigationUnlockTimerRef = useRef(null)
+  const isHomeNavigationLockedRef = useRef(false)
   const [themeMode, setThemeMode] = useState(() => {
     if (typeof window === 'undefined') return 'light'
     return localStorage.getItem('portfolio-theme') === 'dark' ? 'dark' : 'light'
@@ -157,8 +169,32 @@ function Portpolio2() {
     localStorage.setItem('portfolio-theme', themeMode)
   }, [themeMode])
 
+  useEffect(
+    () => () => {
+      window.clearTimeout(topGestureIdleTimerRef.current)
+      window.clearTimeout(topGestureResetTimerRef.current)
+      window.clearTimeout(homeNavigationUnlockTimerRef.current)
+    },
+    [],
+  )
+
   const handleThemeToggle = () => {
     setThemeMode((currentMode) => (currentMode === 'light' ? 'dark' : 'light'))
+  }
+
+  const handleLike = () => {
+    setLikeCounts((currentCounts) =>
+      currentCounts.map((count, index) =>
+        index === activeProject ? count + 1 : count,
+      ),
+    )
+  }
+
+  const scrollToPortfolioTop = () => {
+    scrollAreaRef.current?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
   }
 
   const exitPortfolio = () => {
@@ -172,10 +208,60 @@ function Portpolio2() {
     }, 1900)
   }
 
-  const handlePortfolioWheel = (event) => {
-    if (event.deltaY <= 0) return
+  const resetTopGesture = () => {
+    topGestureCountRef.current = 0
+    isTopGestureActiveRef.current = false
+    window.clearTimeout(topGestureIdleTimerRef.current)
+    window.clearTimeout(topGestureResetTimerRef.current)
+    topGestureIdleTimerRef.current = null
+    topGestureResetTimerRef.current = null
+  }
 
+  const handlePortfolioWheel = (event) => {
     const scrollArea = event.currentTarget
+    const isAtTop = scrollArea.scrollTop <= 2
+
+    if (event.deltaY < 0) {
+      if (!isAtTop || isHomeNavigationLockedRef.current) {
+        resetTopGesture()
+        return
+      }
+
+      if (event.cancelable) event.preventDefault()
+
+      window.clearTimeout(topGestureIdleTimerRef.current)
+      topGestureIdleTimerRef.current = window.setTimeout(() => {
+        isTopGestureActiveRef.current = false
+        topGestureIdleTimerRef.current = null
+      }, 300)
+
+      if (isTopGestureActiveRef.current) return
+
+      isTopGestureActiveRef.current = true
+      topGestureCountRef.current += 1
+
+      if (topGestureCountRef.current === 1) {
+        window.clearTimeout(topGestureResetTimerRef.current)
+        topGestureResetTimerRef.current = window.setTimeout(() => {
+          resetTopGesture()
+        }, 2000)
+        return
+      }
+
+      resetTopGesture()
+      isHomeNavigationLockedRef.current = true
+      onNavigateHome?.()
+      homeNavigationUnlockTimerRef.current = window.setTimeout(() => {
+        isHomeNavigationLockedRef.current = false
+        homeNavigationUnlockTimerRef.current = null
+      }, 1200)
+      return
+    }
+
+    if (event.deltaY === 0) return
+
+    resetTopGesture()
+
     const isAtBottom =
       scrollArea.scrollTop + scrollArea.clientHeight >= scrollArea.scrollHeight - 2
 
@@ -184,6 +270,7 @@ function Portpolio2() {
 
   return (
     <div
+      ref={scrollAreaRef}
       className="h-full min-h-0 w-full overflow-y-scroll overscroll-contain bg-[var(--watch-bg)] font-['Nanum_Gothic','Noto_Sans_KR',system-ui,sans-serif] text-[var(--watch-text)] antialiased [scrollbar-gutter:stable] transition-colors duration-300"
       style={themeStyles[themeMode]}
       onWheel={handlePortfolioWheel}
@@ -192,26 +279,34 @@ function Portpolio2() {
         project={project}
         themeMode={themeMode}
         onThemeToggle={handleThemeToggle}
+        onLogoClick={scrollToPortfolioTop}
       />
 
       <main className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_360px] gap-6 px-8 pb-20 pt-6 max-[980px]:grid-cols-1 max-[620px]:px-4">
         <section className="min-w-0">
           <VideoStage project={project} />
-          <ProjectMeta project={project} />
+          <ProjectMeta
+            project={project}
+            likeCount={likeCounts[activeProject]}
+            onLike={handleLike}
+            onNavigateHome={onNavigateHome}
+            themeMode={themeMode}
+          />
         </section>
 
         <UpNext
           projects={projects}
           activeProject={activeProject}
           onProjectSelect={setActiveProject}
+          themeMode={themeMode}
         />
       </main>
-      <Footer />
+      <Footer themeMode={themeMode} />
     </div>
   )
 }
 
-function WatchHeader({ project, themeMode, onThemeToggle }) {
+function WatchHeader({ project, themeMode, onThemeToggle, onLogoClick }) {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
 
   const handleSubmit = (event) => {
@@ -235,21 +330,29 @@ function WatchHeader({ project, themeMode, onThemeToggle }) {
   }, [isEmailModalOpen])
 
   return (
-    <header className="sticky top-0 z-[100] flex h-14 items-center justify-between gap-4 border-b border-[var(--watch-border)] bg-[var(--watch-header)] px-6 backdrop-blur-[10px] max-[760px]:h-auto max-[760px]:flex-wrap max-[760px]:py-3">
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-[100] flex h-14 items-center justify-between gap-4 border-b border-[var(--watch-border)] bg-[var(--watch-header)] px-6 backdrop-blur-[10px] max-[1100px]:gap-2 max-[760px]:h-auto max-[760px]:flex-wrap max-[760px]:py-3">
+      <div className="flex shrink-0 items-center gap-3">
         <ThemeSwitch themeMode={themeMode} onThemeToggle={onThemeToggle} />
-        <a
-          className="flex items-center gap-2 font-['Space_Mono',monospace] text-[19px] font-bold tracking-normal"
-          href="#"
-          aria-label="VIDU home"
+        <button
+          type="button"
+          className="cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--watch-accent)]"
+          aria-label="Portpolio2 상단으로 이동"
+          onClick={onLogoClick}
         >
-          <span className="h-[9px] w-[9px] rounded-full bg-[#FF4D4D] shadow-[0_0_0_3px_rgba(255,77,77,0.15)]" />
-          <span>VIDU</span>
-        </a>
+          <img
+            className="ml-10 h-auto w-30 object-contain"
+            src={
+              themeMode === 'dark'
+                ? '/img/logo_light.png'
+                : '/img/logo_dark.png'
+            }
+            alt="VIDU"
+          />
+        </button>
       </div>
 
       <form
-        className="mx-4 flex h-9 max-w-[520px] flex-1 items-center gap-2.5 rounded-full border border-[var(--watch-border)] bg-[var(--watch-card)] px-4 text-sm text-[var(--watch-faint)] max-[760px]:order-3 max-[760px]:mx-0 max-[760px]:w-full max-[760px]:max-w-none max-[760px]:flex-none"
+        className="mx-0 flex h-9 min-w-0 max-w-[500px] flex-1 items-center gap-2 rounded-full border border-[var(--watch-border)] bg-[var(--watch-card)] px-4 text-sm text-[var(--watch-faint)] max-[1100px]:mx-0 max-[760px]:order-3 max-[760px]:w-full max-[760px]:max-w-none max-[760px]:flex-none"
         role="search"
         onSubmit={handleSubmit}
       >
@@ -265,7 +368,7 @@ function WatchHeader({ project, themeMode, onThemeToggle }) {
         />
       </form>
 
-      <div className="flex items-center gap-4">
+      <div className="flex shrink-0 items-center gap-4">
         <div className="relative">
           <button
             className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full bg-[var(--watch-accent)] px-4 py-2 text-[13px] font-bold text-white"
@@ -399,13 +502,25 @@ function VideoStage({ project }) {
   )
 }
 
-function ProjectMeta({ project }) {
+function ProjectMeta({
+  project,
+  likeCount,
+  onLike,
+  onNavigateHome,
+  themeMode,
+}) {
   return (
     <>
       <div className="mb-[18px] mt-5 flex flex-wrap items-start justify-between gap-3">
-        <h1 className="text-[22px] font-black leading-[1.35]">
-          {project.title}
-        </h1>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-7 gap-y-1.5">
+          <h1 className="ml-19 mb-3 text-[30px] font-black leading-[1.35]">
+            {project.title}
+          </h1>
+          <span className="flex shrink-0 items-center gap-1.5 font-['-apple-system',BlinkMacSystemFont] text-sm font-bold text-[var(--watch-muted)]"> 기간
+            <CalendarIcon className="h-3.5 w-3.5" />
+            {project.duration}
+          </span>
+        </div>
         <div className="hidden flex-wrap items-center gap-3.5 font-['Space_Mono',monospace] text-[12.5px] text-[var(--watch-muted)]">
           <span>{project.meta}</span>
           <span className="text-[var(--watch-border)]">·</span>
@@ -421,12 +536,19 @@ function ProjectMeta({ project }) {
           <span>{project.duration}</span>
         </div>
         <div className="flex gap-2.5">
-          <ActionButton icon={<LikeIcon className="h-3.5 w-3.5" />}>
+          <ActionButton
+            icon={<LikeIcon className="h-3.5 w-3.5" />}
+            onClick={onLike}
+          >
             추천
+            <span
+              className="min-w-4 text-center font-['Space_Mono',monospace]"
+              aria-live="polite"
+            >
+              {likeCount}
+            </span>
           </ActionButton>
-          <ActionButton icon={<ShareIcon className="h-3.5 w-3.5" />}>
-            공유
-          </ActionButton>
+
           {project.pdfUrl && (
             <a
               className="flex items-center gap-1.5 rounded-full border border-[var(--watch-accent)] bg-[var(--watch-accent)] px-4 py-[9px] text-[13px] font-bold text-white"
@@ -440,12 +562,16 @@ function ProjectMeta({ project }) {
         </div>
       </div>
 
-      <ProjectDescriptionCard project={project} />
+      <ProjectDescriptionCard
+        project={project}
+        onNavigateHome={onNavigateHome}
+        themeMode={themeMode}
+      />
     </>
   )
 }
 
-function ProjectDescriptionCard({ project }) {
+function ProjectDescriptionCard({ project, onNavigateHome, themeMode }) {
   return (
     <div className="overflow-hidden rounded-xl border border-[var(--watch-desc-border)] bg-[var(--watch-desc)] shadow-[var(--watch-shadow)] backdrop-blur-sm transition-colors duration-300">
       <div className="flex items-center justify-between gap-4 border-b border-[var(--watch-border)] px-8 py-6 max-[620px]:flex-col max-[620px]:items-start max-[620px]:px-5">
@@ -462,19 +588,21 @@ function ProjectDescriptionCard({ project }) {
             </p>
           </div>
         </div>
-        <a
-          className="grid h-8 place-items-center rounded-lg border border-[var(--watch-accent)] px-3.5 text-sm font-bold text-[var(--color-primary)] transition-colors hover:bg-[var(--watch-card-soft)]"
-          href="mailto:hello@vidu.dev"
+        <button
+          type="button"
+          className="grid h-8 place-items-center rounded-lg border border-[var(--watch-accent)] px-3.5 text-sm font-bold text-[var(--color-primary)] transition-colors hover:bg-[var(--watch-card-soft)]
+          cursor-pointer"
+          onClick={onNavigateHome}
         >
           홈으로
-        </a>
+        </button>
       </div>
 
       <div className="px-8 py-6 max-[620px]:px-5">
         <div className="mb-6 flex gap-4 overflow-x-auto pb-2">
           <SummaryItem
-            icon={<CalendarIcon className="h-3.5 w-3.5" />}
-            label="기간"
+            icon={<ClockIcon className="h-3.5 w-3.5" />}
+            label="영상길이"
             value={project.duration}
           />
           <SummaryItem
@@ -486,6 +614,9 @@ function ProjectDescriptionCard({ project }) {
             icon={<CodeIcon className="h-3.5 w-3.5" />}
             label="역할"
             value={project.roleTitle}
+            key={project.roleTitle}
+            expandable
+            themeMode={themeMode}
           />
         </div>
 
@@ -562,16 +693,132 @@ function ProjectDescriptionCard({ project }) {
   )
 }
 
-function SummaryItem({ icon, label, value }) {
+function SummaryItem({
+  icon,
+  label,
+  value,
+  expandable = false,
+  themeMode,
+}) {
+  const [popoverPosition, setPopoverPosition] = useState(null)
+  const buttonRef = useRef(null)
+  const popoverRef = useRef(null)
+  const popoverId = useId()
+  const isExpanded = popoverPosition !== null
+
+  const handleToggle = (event) => {
+    if (isExpanded) {
+      setPopoverPosition(null)
+      return
+    }
+
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const viewportPadding = 8
+    const popoverWidth = Math.min(288, window.innerWidth - viewportPadding * 2)
+    const halfPopoverWidth = popoverWidth / 2
+    const centeredLeft = bounds.left + bounds.width / 2
+    const left = Math.min(
+      Math.max(centeredLeft, viewportPadding + halfPopoverWidth),
+      window.innerWidth - viewportPadding - halfPopoverWidth,
+    )
+    const shouldOpenAbove = bounds.top >= 150
+
+    setPopoverPosition({
+      left,
+      top: shouldOpenAbove ? bounds.top - 8 : bounds.bottom + 8,
+      placement: shouldOpenAbove ? 'above' : 'below',
+    })
+  }
+
+  useEffect(() => {
+    if (!isExpanded) return undefined
+
+    const closePopover = () => setPopoverPosition(null)
+    const handlePointerDown = (event) => {
+      if (
+        buttonRef.current?.contains(event.target) ||
+        popoverRef.current?.contains(event.target)
+      ) {
+        return
+      }
+
+      closePopover()
+    }
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') closePopover()
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('resize', closePopover)
+    window.addEventListener('scroll', closePopover, true)
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('resize', closePopover)
+      window.removeEventListener('scroll', closePopover, true)
+    }
+  }, [isExpanded])
+
   return (
-    <div className="h-20 min-h-20 w-[180px] min-w-[180px] max-w-[180px] shrink-0 rounded-lg gap-3 bg-[var(--watch-info-bg)] px-4 py-3 text-left">
-      <p className="mb-3 text-xs tracking-wide text-[var(--watch-info-text)]">
-        {label}
-      </p>
+    <div className="h-20 min-h-20 w-[180px] min-w-[180px] max-w-[180px] shrink-0 rounded-lg bg-[var(--watch-info-bg)] px-4 py-3 text-left">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <p className="text-xs tracking-wide text-[var(--watch-info-text)]">
+          {label}
+        </p>
+        {expandable && (
+          <button
+            ref={buttonRef}
+            type="button"
+            className={`shrink-0 cursor-pointer text-[11px] font-bold underline decoration-current/50 underline-offset-2 transition-opacity hover:opacity-70 ${
+              themeMode === 'dark'
+                ? 'text-[var(--color-primary-light)]'
+                : 'text-[gray]'
+            }`}
+            aria-expanded={isExpanded}
+            aria-controls={popoverId}
+            onClick={handleToggle}
+          >
+            {isExpanded ? '접기' : '펼치기'}
+          </button>
+        )}
+      </div>
       <p className="flex min-w-0 items-center gap-1.5 text-base font-bold leading-tight text-[var(--watch-info-text)]">
         <span className="shrink-0 text-[var(--watch-info-text)]">{icon}</span>
         <span className="truncate">{value}</span>
       </p>
+
+      {isExpanded &&
+        createPortal(
+          <div
+            ref={popoverRef}
+            id={popoverId}
+            className={`fixed z-[300] w-[min(18rem,calc(100vw-1rem))] rounded-2xl border p-4 text-left shadow-[0_16px_40px_rgba(0,0,0,0.24)] ${
+              themeMode === 'dark'
+                ? 'border-white/15 bg-[#25213D] text-white'
+                : 'border-black/10 bg-white text-[#2D2747]'
+            }`}
+            style={{
+              left: popoverPosition.left,
+              top: popoverPosition.top,
+              transform:
+                popoverPosition.placement === 'above'
+                  ? 'translate(-50%, -100%)'
+                  : 'translateX(-50%)',
+            }}
+            role="dialog"
+            aria-label={`${label} 전체 내용`}
+          >
+            <p className="text-xs font-bold tracking-wide text-[var(--color-primary)]">
+              {label}
+            </p>
+            <p className="mt-2 break-words text-sm font-bold leading-relaxed">
+              {value}
+            </p>
+          </div>,
+          document.body,
+        )}
     </div>
   )
 }
@@ -596,7 +843,7 @@ function TimelineList({ timeline }) {
   )
 }
 
-function ActionButton({ children, icon, isPrimary = false }) {
+function ActionButton({ children, icon, isPrimary = false, onClick }) {
   return (
     <button
       className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-4 py-[9px] text-[13px] font-bold ${isPrimary
@@ -604,6 +851,7 @@ function ActionButton({ children, icon, isPrimary = false }) {
         : 'border-[var(--watch-border)] bg-[var(--watch-card)] text-[var(--watch-text)] hover:border-[var(--watch-accent)] hover:text-[var(--watch-accent-dark)]'
         }`}
       type="button"
+      onClick={onClick}
     >
       {icon}
       {children}
@@ -611,12 +859,18 @@ function ActionButton({ children, icon, isPrimary = false }) {
   )
 }
 
-function UpNext({ projects, activeProject, onProjectSelect }) {
+function UpNext({ projects, activeProject, onProjectSelect, themeMode }) {
   return (
-    <aside className="min-w-0">
+    <aside className="sticky top-20 min-w-0 self-start max-[980px]:static">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="pl-1.5 text-[15px] font-black">다음 프로젝트</h2>
-        <span className="text-xs text-[var(--color-primary-light)] ">
+        <span
+          className={`text-xs ${
+            themeMode === 'dark'
+              ? 'text-[var(--color-primary-light)]'
+              : 'text-[#6B7280]'
+          }`}
+        >
           최신순
         </span>
       </div>
@@ -730,20 +984,6 @@ function LikeIcon({ className }) {
   )
 }
 
-function ShareIcon({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M18 13v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h7M15 3h6v6M10 14 21 3"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
-    </svg>
-  )
-}
-
 function CalendarIcon({ className }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -807,20 +1047,20 @@ function FileTextIcon({ className }) {
   )
 }
 
-function ClockIcon({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-      <path
-        d="M12 6v6l4 2"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
-    </svg>
-  )
-}
+// function ClockIcon({ className }) {
+//   return (
+//     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+//       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+//       <path
+//         d="M12 6v6l4 2"
+//         stroke="currentColor"
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth="2"
+//       />
+//     </svg>
+//   )
+// }
 
 function GithubIcon({ className }) {
   return (
@@ -845,6 +1085,32 @@ function ExternalLinkIcon({ className }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2"
+      />
+    </svg>
+  )
+}
+
+function ClockIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="9"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path
+        d="M12 7v5l3.5 2"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

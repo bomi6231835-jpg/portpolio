@@ -93,15 +93,15 @@ const iconAnimationSettings = {
     maxPlacementAttempts: 700,
     blur: {
         amount: 14,
-        delay: 2.5,
+        delay: 1.5,
         duration: 2,
         ease: 'power1.inOut',
     },
 }
 
 const textAnimationSettings = {
-    duration: 6,
-    strengthDelay: 0.55,
+    duration: 4,
+    strengthDelay: 0.45,
 }
 
 const textSequences = [
@@ -277,7 +277,7 @@ const Skill = () => {
         let blurDelay
         let blurTween
         let sectionEntryTrigger
-        let hasExpanded = false
+        let isAnimationCycleActive = false
         let iconPositions = []
 
         const ctx = gsap.context(() => {
@@ -285,6 +285,19 @@ const Skill = () => {
                 '[data-tool-icon]',
                 iconStageRef.current,
             )
+
+            const setIconsToInitialState = () => {
+                gsap.set(icons, {
+                    xPercent: -50,
+                    yPercent: -50,
+                    x: 0,
+                    y: 0,
+                    rotation: 0,
+                    scale: 0.72,
+                    opacity: 0,
+                    filter: 'blur(18px)',
+                })
+            }
 
             const updateIconPositions = () => {
                 const stageBounds = iconStageRef.current.getBoundingClientRect()
@@ -294,7 +307,10 @@ const Skill = () => {
                     stageBounds.height,
                 )
 
-                if (hasExpanded && !expandTimeline?.isActive()) {
+                if (
+                    isAnimationCycleActive &&
+                    !expandTimeline?.isActive()
+                ) {
                     gsap.to(icons, {
                         x: (index) => iconPositions[index].x,
                         y: (index) => iconPositions[index].y,
@@ -306,23 +322,41 @@ const Skill = () => {
                 }
             }
 
-            gsap.set(icons, {
-                xPercent: -50,
-                yPercent: -50,
-                x: 0,
-                y: 0,
-                rotation: 0,
-                scale: 0.72,
-                opacity: 0,
-                filter: 'blur(18px)',
-            })
-
+            setIconsToInitialState()
             updateIconPositions()
 
-            const expandIcons = () => {
-                if (hasExpanded) return
+            const resetAnimationCycle = () => {
+                expandDelay?.kill()
+                expandTimeline?.kill()
+                blurDelay?.kill()
+                blurTween?.kill()
+                clearBlurTweenRef.current?.kill()
 
-                hasExpanded = true
+                expandDelay = null
+                expandTimeline = null
+                blurDelay = null
+                blurTween = null
+                clearBlurTweenRef.current = null
+
+                if (shakeEndDelayRef.current) {
+                    window.clearTimeout(shakeEndDelayRef.current)
+                    shakeEndDelayRef.current = null
+                }
+
+                isAnimationCycleActive = false
+                completedTextAnimations.clear()
+                setIsTextAnimationActive(false)
+                setIsIconJiggleActive(false)
+                setIsIconModalEnabled(false)
+                setActiveModalIcon(null)
+                setIconsToInitialState()
+                updateIconPositions()
+            }
+
+            const expandIcons = () => {
+                if (isAnimationCycleActive) return
+
+                isAnimationCycleActive = true
                 expandDelay = gsap.delayedCall(
                     iconAnimationSettings.arrivalDelay,
                     () => {
@@ -389,6 +423,8 @@ const Skill = () => {
                 start: 'top 85%',
                 onEnter: expandIcons,
                 onEnterBack: expandIcons,
+                onLeave: resetAnimationCycle,
+                onLeaveBack: resetAnimationCycle,
             })
 
             window.addEventListener('resize', handleResize)

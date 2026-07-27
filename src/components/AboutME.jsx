@@ -44,6 +44,7 @@ const aboutItems = [
 const AboutME = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [isSectionActive, setIsSectionActive] = useState(false)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
@@ -69,15 +70,38 @@ const AboutME = () => {
   }, [])
 
   useEffect(() => {
-    if (isPaused || prefersReducedMotion) return undefined
+    if (!isSectionActive || isPaused || prefersReducedMotion) return undefined
 
     const timer = window.setInterval(() => {
       directionRef.current = 1
       setActiveIndex((current) => (current + 1) % aboutItems.length)
-    }, 8000)
+    }, 7000)
 
     return () => window.clearInterval(timer)
-  }, [activeIndex, isPaused, prefersReducedMotion])
+  }, [activeIndex, isPaused, isSectionActive, prefersReducedMotion])
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current
+    if (!section) return undefined
+
+    const handleSectionEnter = () => {
+      directionRef.current = -1
+      setActiveIndex(0)
+      setIsSectionActive(true)
+    }
+
+    const sectionActivityTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top 85%',
+      end: 'bottom 15%',
+      onEnter: handleSectionEnter,
+      onEnterBack: handleSectionEnter,
+      onLeave: () => setIsSectionActive(false),
+      onLeaveBack: () => setIsSectionActive(false),
+    })
+
+    return () => sectionActivityTrigger.kill()
+  }, [])
 
   useLayoutEffect(() => {
     const section = sectionRef.current

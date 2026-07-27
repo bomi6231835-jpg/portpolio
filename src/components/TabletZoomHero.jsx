@@ -317,7 +317,7 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
                 className="absolute left-1/2 top-[clamp(2.5rem,8vh,6rem)] z-20 w-[calc(100%-3rem)] max-w-[1300px] -translate-x-1/2 text-center"
               >
                 {eyebrow && (
-                  <p className="mt-13 text-base font-medium text-[var(--color-primary)] sm:text-lg">
+                  <p className="mt-9 text-base font-medium text-[var(--color-primary)] sm:text-lg">
                     {eyebrow}
                   </p>
                 )}

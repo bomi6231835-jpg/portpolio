@@ -58,7 +58,7 @@ function Home() {
                 onActiveSectionChange={setActiveSection}
             >
                 {/* <Portpolio1 /> */}
-                <Portpolio2 />
+                <Portpolio2 onNavigateHome={() => handleNavigate('home')} />
             </TabletZoomHero>
 
             <div className="mx-auto flex w-full max-w-[1300px] flex-col items-center">
@@ -68,6 +68,7 @@ function Home() {
             <Learn />
             <Learn2 />
             <AboutME />
+            <Footer />
         </main>
     )
 }
