@@ -358,12 +358,12 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
             ref={skipButtonRef}
             type="button"
             onClick={() => navigatePastHero(nextSectionId)}
-            className="absolute bottom-6 z-40 rounded-full border border-white/80 bg-white/85 px-5 py-3 text-xs font-bold tracking-[0.16em] text-[#453E67] shadow-[0_12px_35px_rgba(69,62,103,0.18)] backdrop-blur-xl transition-transform hover:-translate-y-1 focus-visible:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-primary)] sm:bottom-8"
+            className="absolute bottom-6 z-40 rounded-full border border-white/80 bg-white/85 px-2 py-2.5 text-xs font-bold tracking-[0.16em] text-[#453E67] shadow-[0_12px_35px_rgba(69,62,103,0.18)] backdrop-blur-xl transition-transform hover:-translate-y-1 focus-visible:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-primary)] sm:bottom-8"
             style={{
-              right: 'max(1.5rem, calc((100vw - 1300px) / 2 + 1.5rem))',
+              right: 'max(3rem, calc((100vw - 1300px) / 2 + 3rem))',
             }}
           >
-            SKIP TO SKILLS
+            SKILL로 바로가기
           </button>
         </div>
       </section>

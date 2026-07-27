@@ -93,20 +93,20 @@ const iconAnimationSettings = {
     maxPlacementAttempts: 700,
     blur: {
         amount: 14,
-        delay: 5,
+        delay: 2.5,
         duration: 2,
         ease: 'power1.inOut',
     },
 }
 
 const textAnimationSettings = {
-    duration: 6.5,
+    duration: 6,
     strengthDelay: 0.55,
 }
 
 const textSequences = [
     { introduce: 'Introduce', strength: 'My Strength' },
-    { introduce: 'Click', strength: 'Me!' },
+    { introduce: 'Please Press', strength: 'The Icones!' },
 ]
 
 const randomBetween = (min, max) => min + Math.random() * (max - min)
@@ -151,7 +151,16 @@ const createFallbackLayout = (count, stageWidth, stageHeight) => {
     )
     const innerY =
         centerExclusion.height / 2 + iconHeight / 2 + minimumGap
-    const rowPositions = [-maxY, -innerY, innerY, maxY]
+    const requiredRows = Math.ceil(count / columns)
+    const rowPositions = Array.from({ length: requiredRows }, (_, index) =>
+        requiredRows === 1
+            ? 0
+            : -maxY + (index * maxY * 2) / (requiredRows - 1),
+    ).map((y) => {
+        if (Math.abs(y) >= innerY) return y
+
+        return y < 0 ? -Math.min(innerY, maxY) : Math.min(innerY, maxY)
+    })
     const safePositions = rowPositions.flatMap((y) =>
         columnPositions.map((x) => ({ x, y })),
     )
@@ -267,6 +276,7 @@ const Skill = () => {
         let expandTimeline
         let blurDelay
         let blurTween
+        let sectionEntryTrigger
         let hasExpanded = false
         let iconPositions = []
 
@@ -309,13 +319,8 @@ const Skill = () => {
 
             updateIconPositions()
 
-            const handlePortfolioSectionArrival = (event) => {
-                if (
-                    hasExpanded ||
-                    event.detail?.sectionId !== iconSectionRef.current?.id
-                ) {
-                    return
-                }
+            const expandIcons = () => {
+                if (hasExpanded) return
 
                 hasExpanded = true
                 expandDelay = gsap.delayedCall(
@@ -369,9 +374,22 @@ const Skill = () => {
                 )
             }
 
+            const handlePortfolioSectionArrival = (event) => {
+                if (event.detail?.sectionId === iconSectionRef.current?.id) {
+                    expandIcons()
+                }
+            }
+
             const handleResize = () => {
                 updateIconPositions()
             }
+
+            sectionEntryTrigger = ScrollTrigger.create({
+                trigger: iconSectionRef.current,
+                start: 'top 85%',
+                onEnter: expandIcons,
+                onEnterBack: expandIcons,
+            })
 
             window.addEventListener('resize', handleResize)
             window.addEventListener(
@@ -393,6 +411,7 @@ const Skill = () => {
             expandTimeline?.kill()
             blurDelay?.kill()
             blurTween?.kill()
+            sectionEntryTrigger?.kill()
             clearBlurTweenRef.current?.kill()
             if (shakeEndDelayRef.current) {
                 window.clearTimeout(shakeEndDelayRef.current)

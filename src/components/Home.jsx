@@ -6,6 +6,7 @@ import Learn2 from './Learn2'
 import Skill from './Skill'
 import AboutME from './AboutME'
 import SiteNavigation from './SiteNavigation'
+import Footer from './Footer'
 
 function Home() {
     const heroRef = useRef(null)
@@ -46,6 +47,7 @@ function Home() {
             <SiteNavigation
                 activeSection={activeSection}
                 onNavigate={handleNavigate}
+                isHidden={activeSection === 'portfolio'}
             />
 
             <TabletZoomHero

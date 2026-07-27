@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import Footer from './Footer'
 
 const projects = [
   {
@@ -17,7 +18,12 @@ const projects = [
     role:
       '프론트엔드 리드를 맡아 검색 UI, 상품 상세 화면, 실시간 채팅 화면의 설계와 구현을 담당했습니다.',
     thumbClass: 'bg-[linear-gradient(135deg,#808DFD,#C6CBFF)]',
+    img: '/img/portpolio2/today-menu.png',
     progress: 38,
+    githubUrl:'https://github.com/bomi6231835-jpg/today-menu.git',
+    deployUrl:'https://today-menu-git-main-sdhuen01-3018s-projects.vercel.app',
+    pdfUrl: '/pdfs/today-menu.pdf',
+
   },
   {
     title: '서울시 의약품 수요예측\n및 재고관리',
@@ -34,7 +40,11 @@ const projects = [
     role:
       'API 설계, 프롬프트 플로우 구성, 결과 비교 UI를 구현해 사용자가 수정 전후를 쉽게 확인할 수 있게 만들었습니다.',
     thumbClass: 'bg-[linear-gradient(135deg,#6771E0,#9FA8FF)]',
+    img: '/img/portpolio2/drug_main.png',
     progress: 44,
+    githubUrl:'https://github.com/bomi6231835-jpg/Drug_main.git',
+    deployUrl:'https://huggingface.co/spaces/yeyeon/Drug_main',
+    pdfUrl: '/pdfs/drug-main.pdf',
   },
   {
     title: '필름 아티크',
@@ -51,7 +61,11 @@ const projects = [
     role:
       '앱 화면 구조와 상태 관리를 담당하고, Firebase 연동을 통해 실시간 승인 상태가 반영되도록 구현했습니다.',
     thumbClass: 'bg-[linear-gradient(135deg,#565FC7,#808DFD)]',
+    img: '/img/portpolio2/film.png',
     progress: 52,
+    githubUrl:'https://github.com/bomi6231835-jpg/movie_260407.git',
+    deployUrl:'http://127.0.0.1:5000',
+    pdfUrl: '/pdfs/filmatique.pdf',
   },
   {
     title: 'OpenAPI 인터넷 서점',
@@ -68,7 +82,11 @@ const projects = [
     role:
       '컬러, 타이포그래피, 버튼, 카드 규칙을 정리하고 Storybook 문서와 React 컴포넌트를 함께 구성했습니다.',
     thumbClass: 'bg-[linear-gradient(135deg,#A6AEFF,#E9ECFF)]',
+    img: '/img/portpolio2/bookstore.png',
     progress: 61,
+    githubUrl:'https://github.com/bomi6231835-jpg/bookstore_260319.git',
+    deployUrl:'https://bomi6231835-jpg.github.io/bookstore_260319/',
+    pdfUrl: '/pdfs/bookstore.pdf',
   },
 ]
 
@@ -170,7 +188,11 @@ function Portpolio2() {
       style={themeStyles[themeMode]}
       onWheel={handlePortfolioWheel}
     >
-      <WatchHeader themeMode={themeMode} onThemeToggle={handleThemeToggle} />
+      <WatchHeader
+        project={project}
+        themeMode={themeMode}
+        onThemeToggle={handleThemeToggle}
+      />
 
       <main className="mx-auto grid w-full max-w-[1920px] grid-cols-[minmax(0,1fr)_360px] gap-6 px-8 pb-20 pt-6 max-[980px]:grid-cols-1 max-[620px]:px-4">
         <section className="min-w-0">
@@ -184,14 +206,33 @@ function Portpolio2() {
           onProjectSelect={setActiveProject}
         />
       </main>
+      <Footer />
     </div>
   )
 }
 
-function WatchHeader({ themeMode, onThemeToggle }) {
+function WatchHeader({ project, themeMode, onThemeToggle }) {
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
+
   const handleSubmit = (event) => {
     event.preventDefault()
   }
+
+  useEffect(() => {
+    if (!isEmailModalOpen) return undefined
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsEmailModalOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isEmailModalOpen])
 
   return (
     <header className="sticky top-0 z-[100] flex h-14 items-center justify-between gap-4 border-b border-[var(--watch-border)] bg-[var(--watch-header)] px-6 backdrop-blur-[10px] max-[760px]:h-auto max-[760px]:flex-wrap max-[760px]:py-3">
@@ -220,18 +261,64 @@ function WatchHeader({ themeMode, onThemeToggle }) {
           id="vidu-search"
           className="min-w-0 flex-1 bg-transparent text-[var(--watch-text)] outline-none placeholder:text-[var(--watch-faint)]"
           type="search"
-          placeholder="프로젝트 검색"
+          placeholder={project.title.replace(/\s+/g, ' ')}
         />
       </form>
 
       <div className="flex items-center gap-4">
-        <a
-          className="flex items-center gap-1.5 whitespace-nowrap rounded-full bg-[var(--watch-accent)] px-4 py-2 text-[13px] font-bold text-white"
-          href="mailto:hello@vidu.dev"
-        >
-          <MailIcon className="h-3.5 w-3.5" />
-          이메일 보기
-        </a>
+        <div className="relative">
+          <button
+            className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full bg-[var(--watch-accent)] px-4 py-2 text-[13px] font-bold text-white"
+            type="button"
+            aria-expanded={isEmailModalOpen}
+            aria-controls="email-contact-modal"
+            onClick={() => setIsEmailModalOpen((isOpen) => !isOpen)}
+          >
+            <MailIcon className="h-3.5 w-3.5" />
+            이메일 보기
+          </button>
+
+          {isEmailModalOpen && (
+            <div
+              id="email-contact-modal"
+              role="dialog"
+              aria-label="이메일 연락처"
+              className="absolute right-0 top-[calc(100%+10px)] z-[110] w-[270px] rounded-xl border border-[var(--watch-border)] bg-[var(--watch-card)] p-4 text-[var(--watch-text)] shadow-[0_14px_35px_rgba(0,0,0,0.2)]"
+            >
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="text-sm font-black">조예연</p>
+                <button
+                  className="grid h-6 w-6 cursor-pointer place-items-center rounded-full text-base leading-none text-[var(--watch-muted)] hover:bg-[var(--watch-card-soft)]"
+                  type="button"
+                  aria-label="이메일 창 닫기"
+                  onClick={() => setIsEmailModalOpen(false)}
+                >
+                  ×
+                </button>
+              </div>
+              <div className="space-y-2 text-xs leading-relaxed">
+                <p>
+                  <span className="font-bold">구글메일:</span>{' '}
+                  <a
+                    className="hover:text-[var(--watch-accent-dark)] hover:underline"
+                    href="mailto:bomi6231835@gmail.com"
+                  >
+                    bomi6231835@gmail.com
+                  </a>
+                </p>
+                <p>
+                  <span className="font-bold">네이버메일:</span>{' '}
+                  <a
+                    className="hover:text-[var(--watch-accent-dark)] hover:underline"
+                    href="mailto:bomi1835@naver.com"
+                  >
+                    bomi1835@naver.com
+                  </a>
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="flex h-9 min-w-9 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--watch-accent),#B4BBFF)] px-2 font-['Space_Mono',monospace] text-[13px] font-bold text-white">
           Yeon
         </div>
@@ -265,8 +352,16 @@ function ThemeSwitch({ themeMode, onThemeToggle }) {
 function VideoStage({ project }) {
   return (
     <div className="group relative flex aspect-video items-center justify-center overflow-hidden rounded-2xl bg-[linear-gradient(135deg,#565FC7_0%,#808DFD_45%,#C6CBFF_100%)] shadow-[var(--watch-shadow)]">
+      <img
+        className="absolute inset-0 h-full w-full object-contain"
+        src={project.img}
+        alt={`${project.title} 프로젝트 미리보기`}
+        onError={(event) => {
+          event.currentTarget.hidden = true
+        }}
+      />
       <div className="absolute inset-0 bg-[repeating-linear-gradient(115deg,rgba(255,255,255,0.08)_0_2px,transparent_2px_26px)]" />
-      <div className="absolute left-4 top-4 flex items-center gap-1.5 rounded-md bg-black/55 px-2.5 py-1.5 font-['Space_Mono',monospace] text-xs font-bold tracking-[0.5px] text-white">
+      <div className="absolute left-4 top-4 z-10 flex items-center gap-1.5 rounded-md bg-black/55 px-2.5 py-1.5 font-['Space_Mono',monospace] text-xs font-bold tracking-[0.5px] text-white">
         <span className="h-[7px] w-[7px] rounded-full bg-[#FF4D4D]" />
         DEMO PLAY
       </div>
@@ -279,7 +374,7 @@ function VideoStage({ project }) {
         <PlayIcon className="h-[30px] w-[30px] translate-x-0.5 fill-current" />
       </button>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-5 bg-[linear-gradient(to_top,rgba(0,0,0,0.62),transparent)] px-[18px] pb-3.5 pt-[26px] opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 translate-y-5 bg-[linear-gradient(to_top,rgba(0,0,0,0.62),transparent)] px-[18px] pb-3.5 pt-[26px] opacity-0 transition duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
         <div className="relative mb-3 h-1 rounded bg-white/35">
           <div
             className="relative h-full rounded bg-[var(--watch-accent)] after:absolute after:right-[-5px] after:top-1/2 after:h-3 after:w-3 after:-translate-y-1/2 after:rounded-full after:bg-white after:content-['']"
@@ -332,7 +427,16 @@ function ProjectMeta({ project }) {
           <ActionButton icon={<ShareIcon className="h-3.5 w-3.5" />}>
             공유
           </ActionButton>
-          <ActionButton isPrimary>GitHub 보기</ActionButton>
+          {project.pdfUrl && (
+            <a
+              className="flex items-center gap-1.5 rounded-full border border-[var(--watch-accent)] bg-[var(--watch-accent)] px-4 py-[9px] text-[13px] font-bold text-white"
+              href={project.pdfUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              PDF 보기
+            </a>
+          )}
         </div>
       </div>
 
@@ -426,22 +530,32 @@ function ProjectDescriptionCard({ project }) {
           </div>
         </div>
 
-        <div className="flex gap-8 max-[620px]:flex-col">
-          <a
-            className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)]"
-            href="#"
-          >
-            <GithubIcon className="h-4 w-4" />
-            GitHub 저장소
-          </a>
-          <a
-            className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)]"
-            href="#"
-          >
-            <ExternalLinkIcon className="h-4 w-4" />
-            배포 링크
-          </a>
-        </div>
+        {(project.githubUrl || project.deployUrl) && (
+          <div className="flex gap-8 max-[620px]:flex-col">
+            {project.githubUrl && (
+              <a
+                className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)]"
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <GithubIcon className="h-4 w-4" />
+                GitHub 저장소
+              </a>
+            )}
+            {project.deployUrl && (
+              <a
+                className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)]"
+                href={project.deployUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <ExternalLinkIcon className="h-4 w-4" />
+                배포 링크
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </div>
 
@@ -522,6 +636,14 @@ function UpNext({ projects, activeProject, onProjectSelect }) {
               className={`relative aspect-video w-[136px] shrink-0 overflow-hidden rounded-[10px] ${project.thumbClass} ${isActive ? 'outline outline-2 outline-offset-2 outline-[var(--watch-accent)]' : ''
                 }`}
             >
+              <img
+                className="h-full w-full object-contain"
+                src={project.img}
+                alt=""
+                onError={(event) => {
+                  event.currentTarget.hidden = true
+                }}
+              />
               <span className="absolute bottom-1.5 right-1.5 rounded bg-black/75 px-1.5 py-0.5 font-['Space_Mono',monospace] text-xs text-white">
                 {project.duration}
               </span>

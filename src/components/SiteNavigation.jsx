@@ -25,7 +25,7 @@ const NavigationItems = ({ activeSection, onNavigate }) =>
     </button>
   ))
 
-const SiteNavigation = ({ activeSection, onNavigate }) => {
+const SiteNavigation = ({ activeSection, onNavigate, isHidden = false }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleNavigate = (sectionId) => {
@@ -36,7 +36,12 @@ const SiteNavigation = ({ activeSection, onNavigate }) => {
   return (
     <nav
       aria-label="Portfolio sections"
-      className="fixed left-1/2 top-4 z-[100] -translate-x-1/2"
+      aria-hidden={isHidden}
+      className={`fixed left-1/2 top-4 z-[100] -translate-x-1/2 transition-[opacity,visibility] duration-200 ${
+        isHidden
+          ? 'pointer-events-none invisible opacity-0'
+          : 'visible opacity-100'
+      }`}
     >
       <div className="hidden items-center gap-1 rounded-full border border-white/70 bg-white/80 p-1.5 shadow-[0_12px_35px_rgba(69,62,103,0.16)] backdrop-blur-xl sm:flex">
         <NavigationItems
