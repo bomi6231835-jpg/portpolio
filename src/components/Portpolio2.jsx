@@ -10,6 +10,7 @@ const projects = [
     meta: 'UPLOAD 2026.07.28',
     category: 'WEB · TEAM PROJECT',
     duration: '06.19 - 07.27',
+    video_time: '03:00',
     type: '오늘 뭐먹지',
     roleTitle: '프론트엔드 리드',
     stack: ['React', 'Flask', 'Tailwind', 'WebSocket', 'API', 'Figma'],
@@ -32,7 +33,8 @@ const projects = [
     eyebrow: '허깅페이스 배포',
     meta: 'UPLOAD 2026.06.19',
     category: 'AI · DATA',
-    duration: '02:15',
+    duration: '06.19 - 07.27',
+    video_time: '02:15',
     type: '도라에몽의약주머니',
     roleTitle: '머신러닝, 스트림릿, 허깅페이스',
     stack: ['Machine Learning', 'Colab', 'LLM', 'Huggingface', 'Streamlit', 'Figma'],
@@ -54,6 +56,7 @@ const projects = [
     meta: 'UPLOAD 2026.04.07',
     category: 'APP · TEAM PROJECT',
     duration: '04:08',
+    video_time: '04:08',
     type: '매운 짬뽕',
     roleTitle: 'Flask Web Site',
     stack: ['Falsk', 'HTML', 'BootStrap', 'index.css', 'Figma'],
@@ -75,6 +78,7 @@ const projects = [
     meta: 'UPLOAD 2026.03.19',
     category: 'UI · UX',
     duration: '01:52',
+    video_time: '01:52',
     type: '조예연',
     roleTitle: '카카오 API 활용하기',
     stack: ['HTML', 'RestAPI', 'index.css', 'Javascript', 'Figma'],
@@ -490,7 +494,7 @@ function VideoStage({ project }) {
               <PauseIcon className="h-4 w-4" />
             </button>
             <span className="font-['Space_Mono',monospace] text-xs">
-              01:22 / {project.duration}
+              01:22 / {project.video_time}
             </span>
           </div>
           <button type="button" aria-label="전체 화면">
@@ -602,8 +606,8 @@ function ProjectDescriptionCard({ project, onNavigateHome, themeMode }) {
         <div className="mb-6 flex gap-4 overflow-x-auto pb-2">
           <SummaryItem
             icon={<ClockIcon className="h-3.5 w-3.5" />}
-            label="영상길이"
-            value={project.duration}
+            label="영상 길이"
+            value={project.video_time}
           />
           <SummaryItem
             icon={<UsersIcon className="h-3.5 w-3.5" />}
@@ -899,7 +903,7 @@ function UpNext({ projects, activeProject, onProjectSelect, themeMode }) {
                 }}
               />
               <span className="absolute bottom-1.5 right-1.5 rounded bg-black/75 px-1.5 py-0.5 font-['Space_Mono',monospace] text-xs text-white">
-                {project.duration}
+                {project.video_time}
               </span>
             </div>
             <div className="flex min-w-0 flex-col justify-center">
