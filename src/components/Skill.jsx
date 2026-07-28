@@ -240,6 +240,8 @@ const Skill = () => {
     const clearBlurTweenRef = useRef(null)
     const shakeEndDelayRef = useRef(null)
     const navigationTweenRef = useRef(null)
+    const isAnimationScrollLockedRef = useRef(false)
+    const isDirectNavigationActiveRef = useRef(false)
 
     const handleTextAnimationEnd = (animationName) => {
         completedTextAnimationsRef.current.add(animationName)
@@ -260,6 +262,7 @@ const Skill = () => {
             duration: iconAnimationSettings.blur.duration,
             ease: iconAnimationSettings.blur.ease,
             onComplete: () => {
+                isAnimationScrollLockedRef.current = false
                 setIsIconModalEnabled(true)
                 setIsIconJiggleActive(true)
                 shakeEndDelayRef.current = window.setTimeout(() => {
@@ -344,6 +347,7 @@ const Skill = () => {
                 }
 
                 isAnimationCycleActive = false
+                isAnimationScrollLockedRef.current = false
                 completedTextAnimations.clear()
                 setIsTextAnimationActive(false)
                 setIsIconJiggleActive(false)
@@ -357,6 +361,7 @@ const Skill = () => {
                 if (isAnimationCycleActive) return
 
                 isAnimationCycleActive = true
+                isAnimationScrollLockedRef.current = true
                 expandDelay = gsap.delayedCall(
                     iconAnimationSettings.arrivalDelay,
                     () => {
@@ -454,6 +459,7 @@ const Skill = () => {
             }
             clearBlurTweenRef.current = null
             shakeEndDelayRef.current = null
+            isAnimationScrollLockedRef.current = false
             completedTextAnimations.clear()
             ctx.revert()
         }
@@ -462,20 +468,26 @@ const Skill = () => {
     useLayoutEffect(() => {
         const section = iconSectionRef.current
         if (!section) return undefined
-        let isDirectNavigationActive = false
+        let touchStartY = null
 
         const handleDirectNavigationStart = () => {
-            isDirectNavigationActive = true
+            isDirectNavigationActiveRef.current = true
             navigationTweenRef.current?.kill()
             navigationTweenRef.current = null
         }
 
         const handleDirectNavigationEnd = () => {
-            isDirectNavigationActive = false
+            isDirectNavigationActiveRef.current = false
         }
 
         const scrollToLearning = () => {
-            if (navigationTweenRef.current || isDirectNavigationActive) return
+            if (
+                navigationTweenRef.current ||
+                isDirectNavigationActiveRef.current ||
+                isAnimationScrollLockedRef.current
+            ) {
+                return
+            }
 
             const learningSection = document.getElementById('learning')
             if (!learningSection) return
@@ -496,6 +508,47 @@ const Skill = () => {
             })
         }
 
+        const isSkillStageActive = () => {
+            const bounds = section.getBoundingClientRect()
+            return bounds.top <= 1 && bounds.bottom > window.innerHeight
+        }
+
+        const shouldLockScroll = () =>
+            isAnimationScrollLockedRef.current &&
+            !isDirectNavigationActiveRef.current &&
+            isSkillStageActive()
+
+        const handleWheel = (event) => {
+            if (
+                event.deltaY !== 0 &&
+                shouldLockScroll() &&
+                event.cancelable
+            ) {
+                event.preventDefault()
+            }
+        }
+
+        const handleTouchStart = (event) => {
+            touchStartY = event.touches[0]?.clientY ?? null
+        }
+
+        const handleTouchMove = (event) => {
+            const currentY = event.touches[0]?.clientY
+            if (
+                touchStartY !== null &&
+                currentY !== undefined &&
+                touchStartY !== currentY &&
+                shouldLockScroll() &&
+                event.cancelable
+            ) {
+                event.preventDefault()
+            }
+        }
+
+        const resetTouchGesture = () => {
+            touchStartY = null
+        }
+
         const transitionTrigger = ScrollTrigger.create({
             trigger: section,
             start: 'top top',
@@ -510,6 +563,24 @@ const Skill = () => {
             'home:section-navigation-end',
             handleDirectNavigationEnd,
         )
+        window.addEventListener('wheel', handleWheel, {
+            passive: false,
+            capture: true,
+        })
+        window.addEventListener('touchstart', handleTouchStart, {
+            passive: true,
+            capture: true,
+        })
+        window.addEventListener('touchmove', handleTouchMove, {
+            passive: false,
+            capture: true,
+        })
+        window.addEventListener('touchend', resetTouchGesture, {
+            capture: true,
+        })
+        window.addEventListener('touchcancel', resetTouchGesture, {
+            capture: true,
+        })
 
         return () => {
             window.removeEventListener(
@@ -520,9 +591,26 @@ const Skill = () => {
                 'home:section-navigation-end',
                 handleDirectNavigationEnd,
             )
+            window.removeEventListener('wheel', handleWheel, {
+                capture: true,
+            })
+            window.removeEventListener('touchstart', handleTouchStart, {
+                capture: true,
+            })
+            window.removeEventListener('touchmove', handleTouchMove, {
+                capture: true,
+            })
+            window.removeEventListener('touchend', resetTouchGesture, {
+                capture: true,
+            })
+            window.removeEventListener('touchcancel', resetTouchGesture, {
+                capture: true,
+            })
             transitionTrigger.kill()
             navigationTweenRef.current?.kill()
             navigationTweenRef.current = null
+            isDirectNavigationActiveRef.current = false
+            touchStartY = null
         }
     }, [])
 

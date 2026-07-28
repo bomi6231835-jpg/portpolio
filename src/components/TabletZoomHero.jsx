@@ -29,6 +29,10 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
   const zoomTriggerRef = useRef(null)
   const navigationTweenRef = useRef(null)
   const pendingNavigationFrameRef = useRef(null)
+  const wheelGestureActiveRef = useRef(false)
+  const wheelGestureCapturedRef = useRef(false)
+  const wheelGestureIdleTimerRef = useRef(null)
+  const stepAnimationActiveRef = useRef(false)
 
   const dispatchNextSectionArrival = useCallback(() => {
     if (!nextSectionId) return
@@ -43,10 +47,16 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
   const animateToScrollPosition = useCallback((targetPosition, onComplete) => {
     navigationTweenRef.current?.kill()
 
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo(0, targetPosition)
+      onComplete?.()
+      return
+    }
+
     const scrollPosition = { value: window.scrollY }
     navigationTweenRef.current = gsap.to(scrollPosition, {
       value: targetPosition,
-      duration: 1,
+      duration: 0.8,
       ease: 'power2.inOut',
       overwrite: true,
       onUpdate: () => window.scrollTo(0, scrollPosition.value),
@@ -151,10 +161,16 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
   useLayoutEffect(() => {
     window.addEventListener('portfolio:exit-to-home', handleExitToHome)
 
+    let handleStepWheel = null
+
     const ctx = gsap.context(() => {
       const getSlotBounds = () => {
-        const pinBounds = pinRef.current.getBoundingClientRect()
-        const slotBounds = screenSlotRef.current.getBoundingClientRect()
+        const pin = pinRef.current
+        const slot = screenSlotRef.current
+        if (!pin || !slot) return null
+
+        const pinBounds = pin.getBoundingClientRect()
+        const slotBounds = slot.getBoundingClientRect()
 
         return {
           left: slotBounds.left - pinBounds.left,
@@ -165,8 +181,12 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
       }
 
       const setFrameToSlot = () => {
-        gsap.set(portfolioFrameRef.current, {
-          ...getSlotBounds(),
+        const frame = portfolioFrameRef.current
+        const slotBounds = getSlotBounds()
+        if (!frame || !slotBounds) return
+
+        gsap.set(frame, {
+          ...slotBounds,
           borderRadius: 18,
           y: 0,
         })
@@ -175,6 +195,8 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
       const getLaptopRevealY = () => {
         const laptop = laptopRef.current
         const pin = pinRef.current
+        if (!laptop || !pin) return 0
+
         const centeredTop = Math.max(
           24,
           (pin.clientHeight - laptop.offsetHeight) / 2,
@@ -245,8 +267,8 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
           {
             left: 0,
             top: 0,
-            width: () => pinRef.current.clientWidth,
-            height: () => pinRef.current.clientHeight,
+            width: () => pinRef.current?.clientWidth ?? window.innerWidth,
+            height: () => pinRef.current?.clientHeight ?? window.innerHeight,
             borderRadius: 0,
             y: 0,
             duration: 1,
@@ -276,21 +298,130 @@ const TabletZoomHero = forwardRef(function TabletZoomHero(
         )
         .addLabel('portfolio-expanded', 'portfolio+=1')
         .to({}, { duration: 1.4 })
+
+      const resetWheelGesture = () => {
+        wheelGestureActiveRef.current = false
+        wheelGestureCapturedRef.current = false
+        wheelGestureIdleTimerRef.current = null
+      }
+
+      handleStepWheel = (event) => {
+        if (Math.abs(event.deltaY) < 2) return
+
+        window.clearTimeout(wheelGestureIdleTimerRef.current)
+        wheelGestureIdleTimerRef.current = window.setTimeout(
+          resetWheelGesture,
+          300,
+        )
+
+        if (wheelGestureActiveRef.current) {
+          if (
+            (wheelGestureCapturedRef.current ||
+              stepAnimationActiveRef.current) &&
+            event.cancelable
+          ) {
+            event.preventDefault()
+          }
+          return
+        }
+
+        const trigger = zoomTriggerRef.current
+        const activeTimeline = timelineRef.current
+        if (!trigger || !activeTimeline) return
+
+        const scrollY = window.scrollY
+        if (scrollY < trigger.start - 2 || scrollY > trigger.end + 2) return
+
+        const portfolioTime = activeTimeline.labels.portfolio
+        const expandedTime = activeTimeline.labels['portfolio-expanded']
+        const currentTime = activeTimeline.time()
+        const epsilon = 0.02
+        let targetTime
+
+        if (event.deltaY > 0) {
+          if (currentTime >= expandedTime - epsilon) return
+
+          if (currentTime >= portfolioTime - epsilon) {
+            const portfolioScrollArea =
+              portfolioFrameRef.current?.querySelector(
+                '[data-portfolio-scroll-area]',
+              )
+            const isPortfolioAtBottom =
+              portfolioScrollArea &&
+              portfolioScrollArea.scrollTop +
+                portfolioScrollArea.clientHeight >=
+                portfolioScrollArea.scrollHeight - 2
+
+            if (portfolioScrollArea && !isPortfolioAtBottom) return
+          }
+
+          targetTime =
+            currentTime < portfolioTime - epsilon
+              ? portfolioTime
+              : expandedTime
+        } else {
+          if (currentTime <= epsilon) return
+
+          if (currentTime >= expandedTime - epsilon) {
+            const eventTarget =
+              event.target instanceof Element ? event.target : null
+            const portfolioScrollArea = eventTarget?.closest(
+              '[data-portfolio-scroll-area]',
+            )
+
+            if (portfolioScrollArea && portfolioScrollArea.scrollTop > 2) {
+              return
+            }
+          }
+
+          targetTime =
+            currentTime > portfolioTime + epsilon ? portfolioTime : 0
+        }
+
+        wheelGestureActiveRef.current = true
+        wheelGestureCapturedRef.current = true
+        stepAnimationActiveRef.current = true
+        if (event.cancelable) event.preventDefault()
+
+        const targetProgress = targetTime / activeTimeline.duration()
+        const destination =
+          trigger.start + (trigger.end - trigger.start) * targetProgress
+
+        animateToScrollPosition(destination, () => {
+          stepAnimationActiveRef.current = false
+        })
+      }
+
+      window.addEventListener('wheel', handleStepWheel, {
+        passive: false,
+        capture: true,
+      })
     }, sectionRef)
 
     return () => {
       window.removeEventListener('portfolio:exit-to-home', handleExitToHome)
+      if (handleStepWheel) {
+        window.removeEventListener('wheel', handleStepWheel, {
+          capture: true,
+        })
+      }
       navigationTweenRef.current?.kill()
       if (pendingNavigationFrameRef.current) {
         cancelAnimationFrame(pendingNavigationFrameRef.current)
       }
       navigationTweenRef.current = null
       pendingNavigationFrameRef.current = null
+      window.clearTimeout(wheelGestureIdleTimerRef.current)
+      wheelGestureActiveRef.current = false
+      wheelGestureCapturedRef.current = false
+      wheelGestureIdleTimerRef.current = null
+      stepAnimationActiveRef.current = false
       timelineRef.current = null
       zoomTriggerRef.current = null
       ctx.revert()
     }
   }, [
+    animateToScrollPosition,
     dispatchNextSectionArrival,
     handleExitToHome,
     onActiveSectionChange,

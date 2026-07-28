@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Footer from './Footer'
 
@@ -158,16 +158,6 @@ function Portpolio2({ onNavigateHome }) {
   })
 
   const project = projects[activeProject]
-  const pageTitle = useMemo(() => `VIDU - ${project.title}`, [project.title])
-
-  useEffect(() => {
-    const previousTitle = document.title
-    document.title = pageTitle
-
-    return () => {
-      document.title = previousTitle
-    }
-  }, [pageTitle])
 
   useEffect(() => {
     localStorage.setItem('portfolio-theme', themeMode)
@@ -222,6 +212,8 @@ function Portpolio2({ onNavigateHome }) {
   }
 
   const handlePortfolioWheel = (event) => {
+    if (event.defaultPrevented) return
+
     const scrollArea = event.currentTarget
     const isAtTop = scrollArea.scrollTop <= 2
 
@@ -275,6 +267,7 @@ function Portpolio2({ onNavigateHome }) {
   return (
     <div
       ref={scrollAreaRef}
+      data-portfolio-scroll-area
       className="h-full min-h-0 w-full overflow-y-scroll overscroll-contain bg-[var(--watch-bg)] font-['Nanum_Gothic','Noto_Sans_KR',system-ui,sans-serif] text-[var(--watch-text)] antialiased [scrollbar-gutter:stable] transition-colors duration-300"
       style={themeStyles[themeMode]}
       onWheel={handlePortfolioWheel}
