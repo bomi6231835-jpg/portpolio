@@ -236,28 +236,31 @@ const LearningCardSection = ({
                   className="absolute -right-14 -top-14 h-44 w-44 rounded-full bg-[var(--color-primary)] opacity-10 blur-2xl"
                 />
                 <div className="relative flex items-start justify-between">
-                  <span className="text-xs font-bold tracking-[0.2em] text-[var(--color-primary-strong)]">
-                    {card.eyebrow}
-                  </span>
+                  {card.eyebrow && (
+                    <span className="text-xs font-bold tracking-[0.2em] text-[var(--color-primary-strong)]">
+                      {card.eyebrow}
+                    </span>
+                  )}
                   <span className="text-3xl font-black tracking-[-0.06em] text-[var(--color-primary)]/35 sm:text-4xl">
                     {card.number}
                   </span>
                 </div>
-                <div className="relative mt-auto">
-                  <h3 className="text-2xl font-extrabold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl">
+                <div className={`relative ${card.eyebrow ? 'mt-auto' : 'mt-6'}`}>
+                  <h3 className="text-2xl font-extrabold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl whitespace-pre-wrap">
                     {card.title}
                   </h3>
-                  <p className="mt-4 text-sm leading-6 text-neutral-600 sm:text-base sm:leading-7">
+                  <p className="mt-4 text-sm leading-6 text-neutral-600 sm:text-base sm:leading-7 whitespace-pre-wrap">
                     {card.description}
                   </p>
                   <ul
                     aria-label={`${card.title} 학습 키워드`}
                     className="mt-6 flex flex-wrap gap-2"
                   >
-                    {card.tags.map((tag) => (
+                    {(card.tags ?? []).map((tag) => (
                       <li
                         key={tag}
-                        className="rounded-full border border-[#C9CEFF] bg-white/70 px-3 py-1.5 text-xs font-semibold text-[#453E67] backdrop-blur-sm"
+                        className="
+                        rounded-full border border-[#C9CEFF] bg-white/70 px-3 py-1.5 text-xs font-semibold text-[#453E67] backdrop-blur-sm"
                       >
                         {tag}
                       </li>

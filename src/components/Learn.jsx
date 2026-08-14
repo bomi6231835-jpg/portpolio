@@ -3,56 +3,56 @@ import LearningCardSection from './LearningCardSection'
 const learningCards = [
   {
     number: '01',
-    eyebrow: 'Study',
-    title: 'AI+X',
+    eyebrow: 'booklovers',
+    title: 'Open API를 활용한 \n인터넷 서점',
     description:
-      '웹 표준과 반응형 레이아웃을 바탕으로, 다양한 화면에서도 명확하게 정보를 전달하는 방법을 학습합니다.',
+      '카카오 API를 활용한 프론트엔드',
     tags: ['HTML', 'CSS', 'JavaScript'],
     accent: 'from-[#E9ECFF] to-[#F8F9FF]',
   },
   {
     number: '02',
-    eyebrow: 'Portpolio',
-    title: '웹 화면흐름 읽기',
+    eyebrow: 'FilmAtique',
+    title: 'Flask 프로젝트',
     description:
-      '컴포넌트 중심의 설계와 상태 관리를 익히며, 재사용하기 쉽고 자연스럽게 반응하는 화면을 구현합니다.',
-    tags: ['React', 'Components', 'UI'],
+      '백엔드 + 프론트엔드',
+    tags: ['Flask','SQLAlchemy','HTML','CSS','JS','Bootstrap'],
     accent: 'from-[#EEF0FF] to-[#F9F4FF]',
   },
   {
     number: '03',
-    eyebrow: 'Book Store',
-    title: '인터렉션 구현',
+    eyebrow: '미래 서울시의 의약품 예측/분석',
+    title: '빅데이터활용 분석 모델 개발 프로젝트',
     description:
-      'Python을 활용한 서버 로직과 API의 흐름을 이해하고, 프론트엔드와 데이터를 연결하는 경험을 쌓습니다.',
-    tags: ['Python', 'Flask', 'REST API'],
+      '인공지능(머신러닝,딥러닝) + Stremlit(서빙)',
+    tags: ['Machine Learning','Deep Learning','Streamlit','python'],
     accent: 'from-[#EAF5FF] to-[#F5F7FF]',
   },
   {
     number: '04',
-    eyebrow: 'FilmAtique',
-    title: 'Flask-백엔드 경험',
+    eyebrow: '오늘 뭐먹지?',
+    title: '생성형 AI Web App\n기획 및 개발 프로젝트',
     description:
-      '데이터를 정리하고 탐색하는 과정을 통해 의미 있는 패턴을 찾고, 결과를 이해하기 쉽게 시각화합니다.',
-    tags: ['Pandas', 'Analysis', 'Visualization'],
+      '백엔드(Flask) + 프론트엔드(React) + 챗봇(OpenAI)',
+    tags: ['Flask','React','OpenAI','Tailwind CSS'],
     accent: 'from-[#EAFBFA] to-[#F3F7FF]',
   },
   {
     number: '05',
-    eyebrow: 'Today Menu',
-    title: 'React/Tailwind 경험',
+    eyebrow: 'Artis',
+    title: 'AI 기반 인터랙티브\n웹소설 플랫폼',
     description:
-      '머신러닝과 언어 모델의 기본 원리를 익히고, 실제 문제에 적용할 수 있는 활용 방법을 탐구합니다.',
-    tags: ['Machine Learning', 'LLM', 'Prompting'],
+      '대형 언어 모델(LLM) 프롬프트를 최적화하여 사용자의 입력에 따라 실시간으로 서사가 확장되는 콘텐츠 제작 플랫폼',
+    tags: ['Open AI', 'LLM', 'React','Flask'],
     accent: 'from-[#F2ECFF] to-[#FAF7FF]',
   },
   {
     number: '06',
-    eyebrow: 'Drug Demand',
-    title: '머신러닝 허깅페이스에 배포',
+    eyebrow: 'WORKFLOW',
+    title: 'DevOps·협업',
     description:
-      '버전 관리와 컨테이너 기반의 작업 흐름을 익히며, 안정적으로 공유하고 협업하는 방식을 학습합니다.',
-    tags: ['GitHub', 'Docker', 'CI/CD'],
+      '버전 관리와 컨테이너 기반의 작업 흐름을 익히며, 안정적으로 공유하고 협업하는\n방식을 경했습니다.',
+    tags: ['GitHub', 'Docker', 'Figma'],
     accent: 'from-[#ECEFFF] to-[#F4F5FF]',
   },
 ]
@@ -64,8 +64,8 @@ const Learn = () => (
     eyebrow="Learning Journey"
     description={
       <>
-        배운 것을 직접 만들며 확인하고,
-        <br className="hidden sm:block" /> 경험을 다음 도전으로 연결합니다.
+        배운 것을 프로젝트를 만들며 확인하고,
+        <br className="hidden sm:block" /> 이 경험을 다음 도전으로 연결합니다.
       </>
     }
     cards={learningCards}
