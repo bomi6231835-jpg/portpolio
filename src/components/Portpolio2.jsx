@@ -571,7 +571,7 @@ function ProjectMeta({
 function ProjectDescriptionCard({ project, onNavigateHome, themeMode }) {
   return (
     <div className="overflow-hidden rounded-xl border border-[var(--watch-desc-border)] bg-[var(--watch-desc)] shadow-[var(--watch-shadow)] backdrop-blur-sm transition-colors duration-300">
-      <div className="flex items-center justify-between gap-4 border-b border-[var(--watch-border)] px-8 py-6 max-[620px]:flex-col max-[620px]:items-start max-[620px]:px-5">
+      <div className="flex items-center justify-between gap-4 border-b border-[var(--watch-border)] px-8 py-6 max-[620px]:flex-col max-[620px]:items-start max-[620px]:gap-3">
         <div className="flex items-center gap-3">
           <div className="flex h-11 min-w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--watch-accent),#B4BBFF)] px-2 font-['Space_Mono',monospace] text-[13px] font-bold text-white">
             Yeon
@@ -659,26 +659,26 @@ function ProjectDescriptionCard({ project, onNavigateHome, themeMode }) {
         </div>
 
         {(project.githubUrl || project.deployUrl) && (
-          <div className="flex gap-8 max-[620px]:flex-col">
+          <div className="flex gap-8 max-[620px]:flex-col max-[620px]:items-center max-[620px]:gap-3">
             {project.githubUrl && (
               <a
-                className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)]"
+                className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)] max-[620px]:w-40 max-[620px]:flex-none"
                 href={project.githubUrl}
                 target="_blank"
                 rel="noreferrer"
               >
-                <GithubIcon className="h-4 w-4" />
+                <GithubIcon className="h-4 w-5" />
                 GitHub 저장소
               </a>
             )}
             {project.deployUrl && (
               <a
-                className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)]"
+                className="flex h-[38px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--watch-border)] bg-[var(--watch-info-bg)] text-sm font-bold text-[var(--watch-text)] transition-colors hover:bg-[var(--watch-info-bg)] max-[620px]:w-40 max-[620px]:flex-none"
                 href={project.deployUrl}
                 target="_blank"
                 rel="noreferrer"
               >
-                <ExternalLinkIcon className="h-4 w-4" />
+                <ExternalLinkIcon className="h-4 w-5" />
                 배포 링크
               </a>
             )}
@@ -768,11 +768,10 @@ function SummaryItem({
           <button
             ref={buttonRef}
             type="button"
-            className={`shrink-0 cursor-pointer text-[11px] font-bold underline decoration-current/50 underline-offset-2 transition-opacity hover:opacity-70 ${
-              themeMode === 'dark'
+            className={`shrink-0 cursor-pointer text-[11px] font-bold underline decoration-current/50 underline-offset-2 transition-opacity hover:opacity-70 ${themeMode === 'dark'
                 ? 'text-[var(--color-primary-light)]'
                 : 'text-[gray]'
-            }`}
+              }`}
             aria-expanded={isExpanded}
             aria-controls={popoverId}
             onClick={handleToggle}
@@ -791,11 +790,10 @@ function SummaryItem({
           <div
             ref={popoverRef}
             id={popoverId}
-            className={`fixed z-[300] w-[min(18rem,calc(100vw-1rem))] rounded-2xl border p-4 text-left shadow-[0_16px_40px_rgba(0,0,0,0.24)] ${
-              themeMode === 'dark'
+            className={`fixed z-[300] w-[min(18rem,calc(100vw-1rem))] rounded-2xl border p-4 text-left shadow-[0_16px_40px_rgba(0,0,0,0.24)] ${themeMode === 'dark'
                 ? 'border-white/15 bg-[#25213D] text-white'
                 : 'border-black/10 bg-white text-[#2D2747]'
-            }`}
+              }`}
             style={{
               left: popoverPosition.left,
               top: popoverPosition.top,
@@ -862,11 +860,10 @@ function UpNext({ projects, activeProject, onProjectSelect, themeMode }) {
       <div className="mb-3 flex items-center justify-between">
         <h2 className="pl-1.5 text-[15px] font-black">다음 프로젝트</h2>
         <span
-          className={`text-xs ${
-            themeMode === 'dark'
+          className={`text-xs ${themeMode === 'dark'
               ? 'text-[var(--color-primary-light)]'
               : 'text-[#6B7280]'
-          }`}
+            }`}
         >
           최신순
         </span>
@@ -1043,21 +1040,6 @@ function FileTextIcon({ className }) {
     </svg>
   )
 }
-
-// function ClockIcon({ className }) {
-//   return (
-//     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-//       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-//       <path
-//         d="M12 6v6l4 2"
-//         stroke="currentColor"
-//         strokeLinecap="round"
-//         strokeLinejoin="round"
-//         strokeWidth="2"
-//       />
-//     </svg>
-//   )
-// }
 
 function GithubIcon({ className }) {
   return (
