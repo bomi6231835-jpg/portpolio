@@ -14,21 +14,22 @@ const aboutItems = [
       'AI+X융합 프로그램',
     ],
     description: [
-      '저는 에펙, 일러스트, 포토샵 등을 학교에서 배우고 영상 편집을 할 수 있어 배너 혹은 메인 화면을 꾸밀 수 있습니다.',
+      '콘텐츠를 단순히 제작하는 것에서 그치지 않고, 사용자가 접하는 디지털 화면까지 이해하고 구현할 수 있다는 것이 저의 강점입니다.',
+      '영상 전공을 통해 Premiere Pro를 중심으로 After Effects, Illustrator, Photoshop 등 다양한 Adobe 프로그램을 익혔습니다. 이를 활용해 영상 콘텐츠를 기획·편집하고, 웹 배너와 메인 슬라이드 등 웹 환경에 필요한 시각 콘텐츠까지 제작할 수 있습니다.',
     ],
   },
   {
     tab: '목표',
     title: '목표',
     description: [
-      '사용하기 편하면서도 시각적으로 완성도 높은 서비스를 만드는 프론트엔드 개발자가 되고 싶습니다.', '꾸준히 배우고 개선하며 신뢰할 수 있는 개발자로 성장하고 싶습니다.',
+      '영상 제작·편집 경험과 웹 UI 구현 역량을 바탕으로, 단순히 보는 콘텐츠를 넘어 사용자가 직접 경험하고 소통할 수 있는 디지털 콘텐츠를 제작하는 것이 목표입니다.', 'Premiere Pro를 활용한 영상 제작 역량에 Figma, HTML/CSS, JavaScript, React 등의 웹 기술을 더해 영상과 웹의 경계를 넓혀가는 콘텐츠 제작자로 성장하고 싶습니다.',
     ],
   },
   {
     tab: '방식',
     title: '일하는 방식',
     description: [
-      '사용자 관점에서 문제를 바라보고 작은 불편도 놓치지 않으려고 합니다.', 
+      '사용자 관점에서 문제를 바라보고 작은 불편도 놓치지 않으려고 합니다.',
       '팀원과 적극적으로 소통하고, 피드백을 빠르게 반영하면서 더 나은 결과를 만들어갑니다.',
     ],
   },
@@ -142,27 +143,27 @@ const AboutME = () => {
       const photoTimeline = prefersReducedMotion
         ? null
         : gsap
-            .timeline({ paused: true, repeat: -1 })
-            .to(
-              person1,
-              { autoAlpha: 0, duration: 0.7, ease: 'power2.inOut' },
-              3,
-            )
-            .to(
-              person2,
-              { autoAlpha: 1, duration: 0.7, ease: 'power2.inOut' },
-              3,
-            )
-            .to(
-              person2,
-              { autoAlpha: 0, duration: 0.7, ease: 'power2.inOut' },
-              6.7,
-            )
-            .to(
-              person1,
-              { autoAlpha: 1, duration: 0.7, ease: 'power2.inOut' },
-              6.7,
-            )
+          .timeline({ paused: true, repeat: -1 })
+          .to(
+            person1,
+            { autoAlpha: 0, duration: 0.7, ease: 'power2.inOut' },
+            3,
+          )
+          .to(
+            person2,
+            { autoAlpha: 1, duration: 0.7, ease: 'power2.inOut' },
+            3,
+          )
+          .to(
+            person2,
+            { autoAlpha: 0, duration: 0.7, ease: 'power2.inOut' },
+            6.7,
+          )
+          .to(
+            person1,
+            { autoAlpha: 1, duration: 0.7, ease: 'power2.inOut' },
+            6.7,
+          )
 
       const timeline = gsap.timeline({
         scrollTrigger: {
@@ -268,9 +269,12 @@ const AboutME = () => {
     >
       <div
         ref={contentRef}
-        className="mx-auto min-h-[calc(100vh-8rem)] w-full max-w-[1300px] px-4 py-16 sm:px-10 lg:px-14"
+        className="mx-auto min-h-[calc(100vh-8rem)] w-full max-w-[1300px] px-4 py-16 sm:px-10 lg:px-14 max-[620px]:grid max-[620px]:grid-cols-[max-content_6rem] max-[620px]:items-end max-[620px]:gap-x-7"
       >
-        <div ref={titleRef} className="will-change-transform">
+        <div
+          ref={titleRef}
+          className="will-change-transform max-[620px]:col-start-1 max-[620px]:row-start-1 max-[620px]:min-w-0 max-[620px]:self-end"
+        >
           <p className="text-sm font-bold uppercase tracking-[0.28em] text-[var(--color-primary)]">
             My Story
           </p>
@@ -282,14 +286,14 @@ const AboutME = () => {
           </h2>
         </div>
 
-        <div className="mt-10 grid grid-cols-[minmax(0,30fr)_minmax(0,70fr)] items-start gap-2 sm:mt-14 sm:gap-4 lg:grid-cols-[minmax(0,32fr)_minmax(0,68fr)] lg:gap-7">
+        <div className="mt-10 grid grid-cols-[minmax(0,30fr)_minmax(0,70fr)] items-start gap-2 sm:mt-14 sm:gap-4 lg:grid-cols-[minmax(0,32fr)_minmax(0,68fr)] lg:gap-7 max-[620px]:contents">
           <div
             ref={polaroidRef}
-            className="mt-20 w-[78%] max-w-[340px] origin-center -rotate-2 justify-self-center drop-shadow-[0_18px_22px_rgba(69,62,103,0.2)] will-change-transform"
+            className="mt-20 w-[78%] max-w-[340px] origin-center -rotate-2 justify-self-center drop-shadow-[0_18px_22px_rgba(69,62,103,0.2)] will-change-transform max-[620px]:col-start-2 max-[620px]:row-start-1 max-[620px]:mt-0 max-[620px]:w-24 max-[620px]:justify-self-end max-[620px]:self-end"
           >
             <div className="relative aspect-[2444/2882] w-full">
-            <div className='absolute inset-x-[4%] bottom-[13%] top-[4%] h-[90%] w-[95%] object-contain object-bottom bg-[var(--color-primary-light)]' />
-            {/* <img 
+              <div className='absolute inset-x-[4%] bottom-[13%] top-[4%] h-[90%] w-[95%] object-contain object-bottom bg-[var(--color-primary-light)]' />
+              {/* <img
                   src='/img/draw.png.png'
                   alt="그림샘플"
                   className='absolute inset-x-[10%] bottom-[15%] top-[6%] h-[77%] w-[90%] object-contain object-bottom' /> */}
@@ -305,7 +309,7 @@ const AboutME = () => {
                 alt="비스듬히 서 있는 사람"
                 className="absolute inset-x-[-6%] bottom-[15%] top-[13%] h-[80%] w-[84%] object-contain object-bottom"
               />
-                
+
               <img
                 src="/img/polaroid.png"
                 alt=""
@@ -317,7 +321,7 @@ const AboutME = () => {
 
           <div
             ref={descriptionRef}
-            className="min-w-0 w-full pt-1 will-change-transform sm:pt-4"
+            className="min-w-0 w-full pt-1 will-change-transform sm:pt-4 max-[620px]:col-span-2 max-[620px]:col-start-1 max-[620px]:row-start-2 max-[620px]:mt-10"
             aria-label="About me description"
           >
             <section
@@ -347,11 +351,10 @@ const AboutME = () => {
                       aria-selected={activeIndex === index}
                       aria-controls={`about-panel-${index}`}
                       onClick={() => handleTabSelect(index)}
-                      className={`min-w-0 rounded-full px-1 py-1 text-[0.5rem] font-bold transition-colors sm:px-2.5 sm:py-1.5 sm:text-sm ${
-                        activeIndex === index
-                          ? 'bg-[var(--color-primary)] text-white shadow-sm'
-                          : 'text-[#453E67] hover:bg-white/70 focus-visible:bg-white/70'
-                      }`}
+                      className={`min-w-0 rounded-full px-1 py-1 text-[0.5rem] font-bold transition-colors sm:px-2.5 sm:py-1.5 sm:text-sm ${activeIndex === index
+                        ? 'bg-[var(--color-primary)] text-white shadow-sm'
+                        : 'text-[#453E67] hover:bg-white/70 focus-visible:bg-white/70'
+                        }`}
                     >
                       {item.tab}
                     </button>
@@ -359,7 +362,7 @@ const AboutME = () => {
                 </div>
               </div>
 
-              <div className="relative mt-4 min-h-[12rem] overflow-hidden sm:mt-6 sm:min-h-[15rem] lg:min-h-[17rem]">
+              <div className="relative mt-4 grid min-h-[12rem] overflow-hidden sm:mt-6 sm:min-h-[15rem] lg:min-h-[17rem]">
                 {aboutItems.map((item, index) => (
                   <article
                     key={item.title}
@@ -370,7 +373,7 @@ const AboutME = () => {
                     role="tabpanel"
                     aria-labelledby={`about-tab-${index}`}
                     aria-hidden={activeIndex !== index}
-                    className="absolute inset-0"
+                    className="col-start-1 row-start-1 min-w-0 self-start"
                   >
                     <p className="mb-2 text-[0.65rem] font-bold tracking-[0.12em] text-[var(--color-primary)] sm:mb-3 sm:text-sm">
                       0{index + 1}

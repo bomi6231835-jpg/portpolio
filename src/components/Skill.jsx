@@ -99,6 +99,19 @@ const iconAnimationSettings = {
     },
 }
 
+const mobileIconLayoutSettings = {
+    iconWidth: 80,
+    iconHeight: 90,
+    edgePadding: 8,
+    minimumGap: 8,
+    centerExclusion: { width: 180, height: 220 },
+}
+
+const getIconLayoutSettings = (stageWidth) =>
+    stageWidth <= 620
+        ? { ...iconAnimationSettings, ...mobileIconLayoutSettings }
+        : iconAnimationSettings
+
 const textAnimationSettings = {
     duration: 4,
     strengthDelay: 0.45,
@@ -142,10 +155,10 @@ const createFallbackLayout = (count, stageWidth, stageHeight) => {
         edgePadding,
         minimumGap,
         centerExclusion,
-    } = iconAnimationSettings
+    } = getIconLayoutSettings(stageWidth)
     const maxX = Math.max((stageWidth - iconWidth) / 2 - edgePadding, 0)
     const maxY = Math.max((stageHeight - iconHeight) / 2 - edgePadding, 0)
-    const columns = stageWidth < 560 ? 2 : stageWidth < 900 ? 3 : 4
+    const columns = stageWidth <= 620 ? 3 : stageWidth < 900 ? 3 : 4
     const columnPositions = Array.from({ length: columns }, (_, index) =>
         columns === 1 ? 0 : -maxX + (index * maxX * 2) / (columns - 1),
     )
@@ -177,7 +190,7 @@ const createRandomLayout = (count, stageWidth, stageHeight) => {
         centerExclusion,
         maxLayoutAttempts,
         maxPlacementAttempts,
-    } = iconAnimationSettings
+    } = getIconLayoutSettings(stageWidth)
     const maxX = Math.max((stageWidth - iconWidth) / 2 - edgePadding, 0)
     const maxY = Math.max((stageHeight - iconHeight) / 2 - edgePadding, 0)
 
@@ -629,7 +642,7 @@ const Skill = () => {
                     <div
                         key={icon.src}
                         data-tool-icon
-                        className="absolute left-1/2 top-1/2 h-[200px] w-[180px] filter-none opacity-100 will-change-[transform,filter,opacity]"
+                        className="absolute left-1/2 top-1/2 h-[200px] w-[180px] filter-none opacity-100 will-change-[transform,filter,opacity] max-[620px]:h-[90px] max-[620px]:w-[80px]"
                     >
                         <button
                             type="button"

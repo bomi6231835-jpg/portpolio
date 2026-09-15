@@ -24,7 +24,7 @@ const learningCards = [
     eyebrow: '미래 서울시의 의약품 예측/분석',
     title: '빅데이터활용 분석 모델 개발 프로젝트',
     description:
-      '인공지능(머신러닝,딥러닝) + Stremlit(서빙)',
+      '인공지능(머신러닝) + Stremlit(서빙)',
     tags: ['Machine Learning','Deep Learning','Streamlit','python'],
     accent: 'from-[#EAF5FF] to-[#F5F7FF]',
   },
@@ -39,11 +39,11 @@ const learningCards = [
   },
   {
     number: '05',
-    eyebrow: 'Artis',
-    title: 'AI 기반 인터랙티브\n웹소설 플랫폼',
+    eyebrow: '수원 디지털 스페이스 홍보영상',
+    title: 'After Effects를 활용한 모션그래픽 홍보 콘텐츠 제작',
     description:
-      '대형 언어 모델(LLM) 프롬프트를 최적화하여 사용자의 입력에 따라 실시간으로 서사가 확장되는 콘텐츠 제작 플랫폼',
-    tags: ['Open AI', 'LLM', 'React','Flask'],
+      '수원 디지털 스페이스의 공간과 주요 특징을 효과적으로 전달하기 위해 제작한 홍보영상입니다',
+    tags: ['After Effects', 'Premiere Pro'],
     accent: 'from-[#F2ECFF] to-[#FAF7FF]',
   },
   {

@@ -52,12 +52,11 @@ function Home() {
 
             <TabletZoomHero
                 ref={heroRef}
-                eyebrow="Frontend Developer"
                 title="JOYEYEON"
+                eyebrow="영상 콘텐츠와 웹 UI를 연결하는 디지털 콘텐츠 제작자"
                 nextSectionId="skills"
                 onActiveSectionChange={setActiveSection}
             >
-                {/* <Portpolio1 /> */}
                 <Portpolio2 onNavigateHome={() => handleNavigate('home')} />
             </TabletZoomHero>
 
