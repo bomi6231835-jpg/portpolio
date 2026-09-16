@@ -17,15 +17,16 @@ const toolIcons = [
         src: '/img/icon/drone3D.png',
         alt: 'Drone',
         level: 60,
-        summary: '드론 조종자 자격증 소지',
-        description: "TV조선 '엄마의 봄날' 조연출때 DJI미니3(드론)로 영상들을 촬영한 경험이 있습니다.",
+        summary: '드론항공촬영 2급 소지',
+        description: "DJI Mini 3를 활용해 TV조선 「엄마의 봄날」의 항공 영상을 직접 촬영했으며, 해당 영상이 실제 방송에 사용되었습니다.",
     },
     {
         src: '/img/icon/effect3D.png',
         alt: 'Adobe After Effects',
         level: 80,
-        summary: '공모전 대상 수상경력',
-        description: 'After Effects로 제작한 모션 그래픽과 영상 작업으로 디지털 스페이스 홍보대회에서 대상을 받은 수상경력이 있습니다.',
+        summary: '홍보영상 공모전 우수상 수상경력',
+        description: 'After Effects를 활용한 모션그래픽 및 홍보영상 제작으로 디지털 스페이스 홍보대회에서 우수상을 수상했으며, GTQ 포토샵 2급 자격증을 보유하고 있습니다.',
+        
     },
     {
         src: '/img/icon/figma3D.png',
@@ -70,12 +71,20 @@ const toolIcons = [
         description:"React를 활용하여 '오늘 뭐먹지?' 웹 서비스와 개인 포트폴리오를 제작했으며, 컴포넌트 기반으로 UI를 구성하고 다양한 사용자 인터랙션과 반응형 웹을 구현했습니다.",
     },
     {
-        src: '/img/icon/flask3D.png',
+        src: '/img/icon/flask_3D.png',
         alt: 'Flask',
         level: 55,
         summary: 'Flask 기반 백엔드 및 데이터 연동 개발',
         description: 'Flask 기반으로 웹 서비스의 백엔드와 API를 구현하고, Open API를 활용한 외부 데이터 연동 및 처리를 경험했습니다. Seed 데이터를 구성하여 초기 데이터를 구축하고 다양한 Flask 라이브러리를 활용해 필요한 기능을 구현했습니다.',
     },
+    {
+        src:'/img/icon/ITQ.png',
+        alt:'ITQ정보기술자격증',
+        level:60,
+        summary: '학습포트폴리오 경진대회 수상',
+        description:'ITQ 정보기술자격을 취득해 문서 프로그램 활용 능력을 갖추었으며, 학습 포트폴리오 경진대회에서 수상한 경험이 있습니다.',
+        pdfUrl:'/pdfs/DU_portfolio.pdf',
+    }
 ]
 
 const iconAnimationSettings = {

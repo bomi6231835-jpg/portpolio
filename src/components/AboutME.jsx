@@ -6,12 +6,12 @@ gsap.registerPlugin(ScrollTrigger)
 
 const aboutItems = [
   {
-    tab: '경력',
-    title: '나의 경력',
+    tab: '경험',
+    title: 'My Journey',
     path: [
-      '디지털방송콘텐츠학과',
+      '동서울대 디지털방송콘텐츠학과',
       'TV조선 “엄마의 봄날”\n조연출',
-      'AI+X융합 프로그램',
+      'AI+X 융합 프로그램\n교육 연수',
     ],
     description: [
       '콘텐츠를 단순히 제작하는 것에서 그치지 않고, 사용자가 접하는 디지털 화면까지 이해하고 구현할 수 있다는 것이 저의 강점입니다.',
@@ -31,13 +31,14 @@ const aboutItems = [
     description: [
       '사용자 관점에서 문제를 바라보고 작은 불편도 놓치지 않으려고 합니다.',
       '팀원과 적극적으로 소통하고, 피드백을 빠르게 반영하면서 더 나은 결과를 만들어갑니다.',
+      '오류나 예상치 못한 문제가 생겨도 포기하지 않고, 원인을 하나씩 찾아가며 해결하려고 합니다.',
     ],
   },
   {
     tab: '전환',
     title: '업종 전환 이유',
     description: [
-      '아이디어가 실제 화면과 기능으로 구현되는 과정에 매력을 느껴 프론트엔드 개발에 도전했습니다. 이전 경험에서 쌓은 소통 능력과 책임감을 개발 업무에도 연결하고 싶었습니다.',
+      '영상 편집과 디자인 분야에서 쌓은 경험을 다양한 방식으로 활용하고 싶어 웹 분야에 관심을 갖게 되었습니다. 웹 개발을 배우면서 기존의 콘텐츠 제작 경험을 화면 구성과 디자인에도 활용할 수 있다는 점에 매력을 느꼈고, 현재는 영상·디자인 경험에 웹 기술을 더해 다양한 디지털 콘텐츠를 구현하는 방향으로 성장하고 있습니다',
     ],
   },
 ]
@@ -276,7 +277,7 @@ const AboutME = () => {
           className="will-change-transform max-[620px]:col-start-1 max-[620px]:row-start-1 max-[620px]:min-w-0 max-[620px]:self-end"
         >
           <p className="text-sm font-bold uppercase tracking-[0.28em] text-[var(--color-primary)]">
-            My Story
+            My Journey
           </p>
           <h2
             id="about-me-heading"
@@ -293,10 +294,7 @@ const AboutME = () => {
           >
             <div className="relative aspect-[2444/2882] w-full">
               <div className='absolute inset-x-[4%] bottom-[13%] top-[4%] h-[90%] w-[95%] object-contain object-bottom bg-[var(--color-primary-light)]' />
-              {/* <img
-                  src='/img/draw.png.png'
-                  alt="그림샘플"
-                  className='absolute inset-x-[10%] bottom-[15%] top-[6%] h-[77%] w-[90%] object-contain object-bottom' /> */}
+
               <img
                 ref={person1Ref}
                 src="/img/person1.png"

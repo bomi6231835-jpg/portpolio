@@ -101,25 +101,37 @@ function ModalIcon({ icon, isOpen, onClose }) {
                             </div>
                         </div>
 
-                <div className="px-3 pb-2 pt-4">
-                    <h2 className="text-lg font-black text-[var(--color-text)]">
-                        {icon.alt}
-                    </h2>
-                    <p className="mt-1.5 break-keep text-sm leading-6 text-[var(--color-text)]/65">
-                        {icon.summary}
-                    </p>
-                </div>
-            </section>
+                        <div className="px-3 pb-2 pt-4">
+                            <h2 className="text-lg font-black text-[var(--color-text)]">
+                                {icon.alt}
+                            </h2>
+                            <p className="mt-1.5 break-keep text-sm leading-6 text-[var(--color-text)]/65">
+                                {icon.summary}
+                            </p>
+                        </div>
+                    </section>
 
-            <section className="w-full shrink-0 rounded-3xl border border-[var(--color-primary)]/15 bg-white px-6 py-5 shadow-[0_12px_32px_rgb(103_113_224_/_0.14)]">
-                <p className="mb-2 text-sm font-black text-[var(--color-primary)]">
-                    상세 설명
-                </p>
-                <p className="whitespace-pre-wrap break-words text-sm leading-6 text-[var(--color-text)]/75">
-                    {icon.description}
-                </p>
-            </section>
-        </div >
+                    <section className="w-full shrink-0 rounded-3xl border border-[var(--color-primary)]/15 bg-white px-6 py-5 shadow-[0_12px_32px_rgb(103_113_224_/_0.14)]">
+                        <p className="mb-2 text-sm font-black text-[var(--color-primary)]">
+                            상세 설명
+                        </p>
+                        <p className="whitespace-pre-wrap break-words text-sm leading-6 text-[var(--color-text)]/75">
+                            {icon.description}
+                        </p>
+                        {icon.pdfUrl && (
+                            <div className="mt-3 flex justify-end">
+                                <a
+                                    href={icon.pdfUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm font-bold text-[var(--color-primary)] underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4"
+                                >
+                                    pdf보기
+                                </a>
+                            </div>
+                        )}
+                    </section>
+                </div >
             </div >
         </>
     )
