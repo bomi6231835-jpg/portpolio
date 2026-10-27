@@ -6,6 +6,27 @@ import { ProjectMeta, UpNext, WatchHeader } from './Portpolio2Sections'
 
 const projects = [
   {
+    // 새 영상 정보와 썸네일 경로, 유튜브 영상 ID를 입력하세요.
+    title: '대만 브이로그 (관광프로모션)',
+    eyebrow: '유튜브용 관광프로모션 영상',
+    meta: 'UPLOAD 2026.10.27',
+    category: 'Video_Edit',
+    duration: '2025.2.1 - 2026.10.27',
+    video_time: '13:36',
+    type: '개인용 브이로그',
+    roleTitle: '개인 프로젝트',
+    stack: ['After Effects', 'Premiere Pro', 'Illustrator'],
+    summary: '가족들과 여행으로 대만에 가서 촬영한 개인브이로그입니다. 하지만 목적은 관광프로모션으로 더 느껴지게끔 기획하였습니다. 그래도 곳곳에 재미요소를 줌으로써 너무 영상이 딱딱하지는 않게끔 하였습니다.',
+    timeline: '00:00 인트로 · 00:27 대만관광시작! · 01:13 타이베이 101빌딩 · 04:20 서문정 · 05:41 예류지질공원 · 09:54 태로각협곡',
+    role: '기획, 촬영, 편집',
+    thumbClass: 'bg-[linear-gradient(135deg,#808DFD,#C6CBFF)]',
+    img: '/img/portpolio2/v_log.png', // 영상 썸네일 경로로 변경
+    youtubeId: 'JRH1CMnJpqM', // 유튜브 영상 ID 입력
+    githubUrl: '',
+    deployUrl: '',
+    pdfUrl: '',
+  },
+  {
     title: '오늘 뭐먹지?',
     eyebrow: 'React Team Project',
     meta: 'UPLOAD 2026.07.28',

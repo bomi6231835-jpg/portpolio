@@ -543,7 +543,7 @@ function UpNext({ projects, activeProject, onProjectSelect, themeMode }) {
         </span>
       </div>
 
-      {projects.slice(0, 5).map((project, index) => {
+      {projects.map((project, index) => {
         const isActive = activeProject === index
 
         return (
