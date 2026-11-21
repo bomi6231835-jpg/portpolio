@@ -24,7 +24,7 @@ const projects = [
     youtubeId: 'JRH1CMnJpqM', // 유튜브 영상 ID 입력
     githubUrl: '',
     deployUrl: '',
-    pdfUrl: '\pdfs\v_log.pdf',
+    pdfUrl: '/pdfs/v_log.pdf',
   },
   {
     title: '오늘 뭐먹지?',
