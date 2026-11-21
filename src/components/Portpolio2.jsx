@@ -20,11 +20,11 @@ const projects = [
     timeline: '00:00 인트로 · 00:27 대만관광시작! · 01:13 타이베이 101빌딩 · 04:20 서문정 · 05:41 예류지질공원 · 09:54 태로각협곡',
     role: '기획, 촬영, 편집',
     thumbClass: 'bg-[linear-gradient(135deg,#808DFD,#C6CBFF)]',
-    img: '/img/portpolio2/v_log.png', // 영상 썸네일 경로로 변경
+    img: '/img/portpolio2/taibai.png', // 영상 썸네일 경로로 변경
     youtubeId: 'JRH1CMnJpqM', // 유튜브 영상 ID 입력
     githubUrl: '',
     deployUrl: '',
-    pdfUrl: '',
+    pdfUrl: '\pdfs\v_log.pdf',
   },
   {
     title: '오늘 뭐먹지?',
